@@ -12,6 +12,12 @@ namespace Wanted
 
 	Engine::~Engine()
 	{
+		// 메인 레벨 제거.
+		if (mainLevel)
+		{
+			delete mainLevel;
+			mainLevel = nullptr;
+		}
 	}
 
 	void Engine::Run()
@@ -53,7 +59,7 @@ namespace Wanted
 			deltaTime = deltaTime
 				/ static_cast<float>(frequency.QuadPart);
 
-			// 고정 프레임.
+			// 고정 프레임 기법.
 			if (deltaTime >= oneFrameTime)
 			{
 				ProcessInput();
@@ -149,11 +155,24 @@ namespace Wanted
 			//<< ", FPS: " << (1.0f / deltaTime) << "\n";
 
 		// ESC키 눌리면 종료.
-		//if (GetKeyDown(VK_ESCAPE))
-		//{
-			//QuitEngine();
-		//}
+		if (GetKeyDown(VK_ESCAPE))
+		{
+			QuitEngine();
+		}
 
+		// 레벨에 이벤트 흘리기.
+		// 예외처리.
+		if (!mainLevel)
+		{
+			std::cout << "Error: Engine::Draw(). mainLevel is empty.\n";
+			return;
+		}
+
+		mainLevel->Tick(deltaTime);
+	}
+
+	void Engine::Draw()
+	{
 		if (!mainLevel)
 		{
 			std::cout << "Error: Engine::Draw(). mainLevel is empty.\n";
@@ -161,9 +180,5 @@ namespace Wanted
 		}
 
 		mainLevel->Draw();
-	}
-
-	void Engine::Draw()
-	{
 	}
 }

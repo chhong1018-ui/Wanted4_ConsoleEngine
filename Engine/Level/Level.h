@@ -9,7 +9,7 @@ namespace Wanted
 	// 전방 선언.
 	class Actor;
 
-
+	//
 	class Level
 	{
 	public:
@@ -21,9 +21,11 @@ namespace Wanted
 		virtual void Tick(float deltaTime);
 		virtual void Draw();
 
+		// 액터 추가 함수.
+		void AddNewActor(Actor* newActor);
+
 	protected:
 		std::vector<Actor*> actors;
-	
+
 	};
 }
-

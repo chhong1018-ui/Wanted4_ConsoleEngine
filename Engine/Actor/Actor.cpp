@@ -2,13 +2,14 @@
 
 namespace Wanted
 {
-
 	Wanted::Actor::Actor()
 	{
+
 	}
 
 	Wanted::Actor::~Actor()
 	{
+
 	}
 
 	void Actor::BeginPlay()
@@ -24,5 +25,4 @@ namespace Wanted
 	{
 
 	}
-
 }

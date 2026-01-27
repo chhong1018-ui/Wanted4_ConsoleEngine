@@ -1,13 +1,21 @@
 #include "Engine.h"
 #include "Level/Level.h"
+#include "Core/Input.h"
 
 #include <iostream>
 #include <Windows.h>
 
 namespace Wanted
 {
+	Engine* Engine::instance = nullptr;
+
 	Engine::Engine()
 	{
+		// 전역 변수 값 초기화.
+		instance = this;
+
+		// 입력 관리자 생성.
+		input = new Input();
 	}
 
 	Engine::~Engine()
@@ -17,6 +25,13 @@ namespace Wanted
 		{
 			delete mainLevel;
 			mainLevel = nullptr;
+		}
+
+		// 입력 관리자 제거.
+		if (input)
+		{
+			delete input;
+			input = nullptr;
 		}
 	}
 
@@ -61,7 +76,7 @@ namespace Wanted
 			// 고정 프레임 기법.
 			if (deltaTime >= oneFrameTime)
 			{
-				ProcessInput();
+				input->ProcessInput();
 
 				// 프레임 처리.
 				BeginPlay();
@@ -71,12 +86,7 @@ namespace Wanted
 				//이전 시간 값 갱신.
 				previousTime = currentTime;
 
-				// 현재 입력 값을 이전 입력 값으로 저장.
-				for (int ix = 0; ix < 255; ++ix)
-				{
-					keyStates[ix].wasKeyDown
-						= keyStates[ix].isKeyDown;
-				}
+				input->SavePreviousInputStates();
 			}
 		}
 
@@ -87,23 +97,6 @@ namespace Wanted
 	void Engine::QuitEngine()
 	{
 		isQuit = true;
-	}
-
-	bool Engine::GetKeyDown(int keyCode)
-	{
-		return keyStates[keyCode].isKeyDown
-			&& !keyStates[keyCode].wasKeyDown;
-	}
-
-	bool Engine::GetKeyUp(int keyCode)
-	{
-		return !keyStates[keyCode].isKeyDown
-			&& keyStates[keyCode].wasKeyDown;
-	}
-
-	bool Engine::GetKey(int keyCode)
-	{
-		return keyStates[keyCode].isKeyDown;
 	}
 
 	void Engine::SetNewLevel(Level* newLevel)
@@ -121,15 +114,17 @@ namespace Wanted
 		mainLevel = newLevel;
 	}
 
-	void Engine::ProcessInput()
+	Engine& Engine::Get()
 	{
-		// 키 마다 입력 읽기.
-		// !!! 운영체제가 제공하는 기능을 사용할 수 밖에 없음.
-		for (int ix = 0; ix < 255; ++ix)
+		// 예외처리.
+		if (!instance)
 		{
-			keyStates[ix].isKeyDown
-				= (GetAsyncKeyState(ix) & 0X8000) > 0 ? true : false;
+			// Silent is violent.
+			std::cout << "Error: Engine::Get(). instance is null\n";
+			__debugbreak();
 		}
+
+		return *instance;
 	}
 
 	void Engine::BeginPlay()
@@ -151,12 +146,6 @@ namespace Wanted
 	{
 		//std::cout << "DeltaTime: " << deltaTime
 			//<< ", FPS: " << (1.0f / deltaTime) << "\n";
-
-		// ESC키 눌리면 종료.
-		if (GetKeyDown(VK_ESCAPE))
-		{
-			QuitEngine();
-		}
 
 		// 레벨에 이벤트 흘리기.
 		// 예외처리.

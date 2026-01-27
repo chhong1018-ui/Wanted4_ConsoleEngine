@@ -1,4 +1,6 @@
 #include "TestActor.h"
+#include "Core/Input.h"
+#include "Engine/Engine.h"
 #include <iostream>
 
 void TestActor::BeginPlay()
@@ -13,6 +15,13 @@ void TestActor::BeginPlay()
 void TestActor::Tick(float deltaTime)
 {
 	Actor::Tick(deltaTime);
+
+	// Q키 종료.
+	if (Wanted::Input::Get().GetKeyDown('Q'))
+	{
+		// todo: 게임 엔진 종료 요청.
+		Wanted::Engine::Get().QuitEngine();
+	}
 
 	std::cout << "TestActor::Tick().deltaTime : " << deltaTime << ", FPS : " << (1.0f / deltaTime) << "\n";
 }

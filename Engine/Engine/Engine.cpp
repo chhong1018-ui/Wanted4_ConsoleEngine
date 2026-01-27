@@ -46,8 +46,7 @@ namespace Wanted
 		// !->Not -> bool값 뒤집기.
 		while (!isQuit)
 		{
-			//timeGetTime() 밀리초 단위로 검색.
-			// 현재 시간 구하기.
+			// 현재 시간 구하기. timeGetTime() 밀리초 단위로 검색.
 			QueryPerformanceCounter(&time);
 			currentTime = time.QuadPart;
 
@@ -73,7 +72,6 @@ namespace Wanted
 				previousTime = currentTime;
 
 				// 현재 입력 값을 이전 입력 값으로 저장.
-
 				for (int ix = 0; ix < 255; ++ix)
 				{
 					keyStates[ix].wasKeyDown
@@ -130,7 +128,7 @@ namespace Wanted
 		for (int ix = 0; ix < 255; ++ix)
 		{
 			keyStates[ix].isKeyDown
-				= GetAsyncKeyState(ix) & 0X8000 > 0 ? true : false;
+				= (GetAsyncKeyState(ix) & 0X8000) > 0 ? true : false;
 		}
 	}
 

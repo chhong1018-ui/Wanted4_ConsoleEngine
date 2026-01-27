@@ -1,0 +1,1 @@
+xcopy Bin\x64\Debug\Engine1\Engine1.dll Library\Engine\x64\Debug\ /e /y

@@ -105,6 +105,7 @@ xcopy $(OutDir)\Engine1.lib ..\Library\Engine\$(Platform)\$(Configuration)\ /e /
   <ItemGroup>
     <ClInclude Include="Actor\Actor.h" />
     <ClInclude Include="Common\Common.h" />
+    <ClInclude Include="Common\RTTI.h" />
     <ClInclude Include="Core\Input.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Level\Level.h" />

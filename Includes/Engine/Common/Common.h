@@ -1,6 +1,6 @@
 #pragma once
 #pragma warning(disable: 4251) // 미봉책(방법이 없음).
-#pragma warning(disable: 4275) // 위험성 인지한 상황에서 발생하는 경고 무시.
+#pragma warning(disable: 4172) // 위험성 인지한 상황에서 발생하는 경고 무시.
 
 //#define ENGINE_BUILD_DLL 1
 

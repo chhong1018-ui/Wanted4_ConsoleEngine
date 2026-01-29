@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common/RTTI.h"
+#include "Math/Vector.h"
 
 namespace Wanted
 {
@@ -10,7 +11,7 @@ namespace Wanted
 		RTTI_DECLARATIONS(Actor, RTTI)
 
 	public:
-		Actor();
+		Actor(const char image = ' ', const Vector2& position = Vector2::Zero);
 		virtual ~Actor();
 
 		// 게임 플레이 이벤트.
@@ -18,9 +19,13 @@ namespace Wanted
 		virtual void Tick(float deltaTime);
 		virtual void Draw();
 
+		// 위치변경 및 읽기 함수.
+		void SetPosition(const Vector2& newPosition);
+		inline Vector2 GetPosition() const { return position; }
+
 		// Getter
 		inline bool HasBeganPlay() const { return hasBeganPlay; }
-		bool IsActive() const
+		inline bool IsActive() const
 		{
 			return isActive && !destroyRequested;
 		}
@@ -34,5 +39,11 @@ namespace Wanted
 
 		//현재 프레임에 삭제 요청 받았는지 여부.
 		bool destroyRequested = false;
+
+		char image = ' ';
+
+	private:
+		// 위치.
+		Vector2 position;
 	};
 }

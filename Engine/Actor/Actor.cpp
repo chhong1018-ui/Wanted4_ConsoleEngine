@@ -1,13 +1,18 @@
 #include "Actor.h"
+#include "Core/Renderer.h"
+#include "Util/Util.h"
+
 #include <iostream>
 #include <Windows.h>
 
 namespace Wanted
 {
-	Actor::Actor(const char image, const Vector2& position)
-		: image(image), position(position)
+	Actor::Actor(
+		const char image, 
+		const Vector2& position,
+		Color color)
+		: image(image), position(position), color(color)
 	{
-
 	}
 
 	Actor::~Actor()
@@ -22,32 +27,16 @@ namespace Wanted
 	}
 	void Actor::Tick(float deltaTime)
 	{
-
 	}
 	void Actor::Draw()
 	{
-		COORD coord = {};
-		coord.X = static_cast<short>(position.x);
-		coord.Y = static_cast<short>(position.y);
-		SetConsoleCursorPosition(
-			GetStdHandle(STD_OUTPUT_HANDLE),
-			coord
-		);
-
-		std::cout << image;
+		// 렌더러에 그리기 요청.
+		Renderer::Draw(position, color, image);
 	}
 
 	void Actor::SetPosition(const Vector2& newPosition)
 	{
-		COORD coord = {};
-		coord.X = static_cast<short>(position.x);
-		coord.Y = static_cast<short>(position.y);
-		SetConsoleCursorPosition(
-			GetStdHandle(STD_OUTPUT_HANDLE),
-			coord
-		);
-
-		std::cout << ' ';
+		Renderer::Draw(position, ' ');
 
 		position = newPosition;
 	}

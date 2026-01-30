@@ -30,8 +30,13 @@ namespace Wanted
 		// 액터 추가 함수.
 		void AddNewActor(Actor* newActor);
 
+		void ProcessAddAndDestroyActors();
+
 	protected:
 		// 엑터 배열.
 		std::vector<Actor*> actors;
+
+		// 실행 중에 추가 요청된 액터의 배열
+		std::vector<Actor*> addRequestedActors;
 	};
 }

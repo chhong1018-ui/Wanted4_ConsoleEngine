@@ -151,12 +151,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Actor\TestActor.cpp" />
+    <ClCompile Include="Actor\box.cpp" />
+    <ClCompile Include="Actor\Player.cpp" />
     <ClCompile Include="Level\TestLevel.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Actor\TestActor.h" />
+    <ClInclude Include="Actor\box.h" />
+    <ClInclude Include="Actor\Player.h" />
     <ClInclude Include="Level\TestLevel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

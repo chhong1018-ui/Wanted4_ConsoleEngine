@@ -1,17 +1,22 @@
-#include "TestActor.h"
+#include "Player.h"
 #include "Core/Input.h"
 #include "Engine/Engine.h"
+#include "Actor/Box.h"
+#include "Level/Level.h"
+
 #include <iostream>
 #include <Windows.h>
 
 using namespace Wanted;
 
-TestActor::TestActor()
-	: Actor('T', Wanted::Vector2(5, 5))
+Player::Player()
+	: super('P', Wanted::Vector2(5, 5), Color::Red)
 {
+	// 그리기 우선순위 높게 설정.
+	sortingOrder = 10;
 }
 
-void TestActor::BeginPlay()
+void Player::BeginPlay()
 {
 	// 상위 함수 호출.
 	// C++는 부모함수 가리키는 포인터가 없음.
@@ -20,7 +25,7 @@ void TestActor::BeginPlay()
 	//std::cout << "TestActor::BeginPlay().\n";
 }
 
-void TestActor::Tick(float deltaTime)
+void Player::Tick(float deltaTime)
 {
 	Actor::Tick(deltaTime);
 
@@ -30,7 +35,19 @@ void TestActor::Tick(float deltaTime)
 		// todo: 게임 엔진 종료 요청.
 		Wanted::Engine::Get().QuitEngine();
 	}
+	
+	// 스페이스로 박스 생성.
+	// vk -> virtual key.
+	if (Input::Get().GetKeyDown(VK_SPACE))
+	{
+		// 박스 생성.
+		if (owner)
+		{
+			owner->AddNewActor(new Box(GetPosition()));
+		}
+	}
 
+	// 이동.
 	// 오른쪽 방향키가 눌리고, x위치가 20번째 칸을 안 넘어갔으면,
 	if (Input::Get().GetKey(VK_RIGHT) && GetPosition().x < 20)
 	{
@@ -71,7 +88,7 @@ void TestActor::Tick(float deltaTime)
 	}
 
 	// 아래쪽 방향키가 눌리고, y위치가 20번째 칸을 안 넘어갔으면,
-	if (Input::Get().GetKey(VK_DOWN) && GetPosition().y < 20)
+	if (Input::Get().GetKey(VK_DOWN) && GetPosition().y < 15)
 	{
 		// 현재 위치 가져오기.
 		Vector2 newPosition = GetPosition();
@@ -82,11 +99,9 @@ void TestActor::Tick(float deltaTime)
 		// 새로운 위치 설정.
 		SetPosition(newPosition);
 	}
-
-	//std::cout << "TestActor::Tick().deltaTime : " << deltaTime << ", FPS : " << (1.0f / deltaTime) << "\n";
 }
 
-void TestActor::Draw()
+void Player::Draw()
 {
 	Actor::Draw();
 }

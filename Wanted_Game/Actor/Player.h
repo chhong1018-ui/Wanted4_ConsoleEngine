@@ -2,12 +2,12 @@
 
 #include "Actor/Actor.h"
 
-class TestActor : public Wanted::Actor
+class Player : public Wanted::Actor
 {
-	RTTI_DECLARATIONS(TestActor, Actor)
+	RTTI_DECLARATIONS(Player, Actor)
 
 public:
-	TestActor();
+	Player();
 
 protected:
 	virtual void BeginPlay() override;

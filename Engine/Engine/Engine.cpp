@@ -145,6 +145,9 @@ namespace Wanted
 		// 정리 작업.
 		std::cout << "Engine has been shutdown....\n";
 
+		std::cin.ignore(1000, '\n');	//exe파일 실행 시 바로 종료 되는 이슈 있어 추가.
+		std::cin.get();		//exe파일 실행 시 바로 종료 되는 이슈 있어 추가.
+
 		//커서 켜기
 		Util::TurnOnCursor();
 	}

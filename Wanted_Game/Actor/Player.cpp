@@ -4,6 +4,8 @@
 #include "Actor/Box.h"
 #include "Level/Level.h"
 
+#include "Game/Game.h"
+
 #include "Interface/ICanPlayerMove.h"
 
 #include <iostream>
@@ -15,7 +17,7 @@ Player::Player(const Vector2& position)
 	: super('P', position, Color::Red)
 {
 	// 그리기 우선순위 높게 설정.
-	sortingOrder = 2;
+	sortingOrder = 10;
 }
 
 void Player::BeginPlay()
@@ -30,6 +32,12 @@ void Player::BeginPlay()
 void Player::Tick(float deltaTime)
 {
 	Actor::Tick(deltaTime);
+
+	if (Wanted::Input::Get().GetKeyDown(VK_ESCAPE))
+	{
+		Game::Get().ToggleMenu();
+		return;
+	}
 
 	// Q키 종료.
 	if (Wanted::Input::Get().GetKeyDown('Q'))
@@ -49,11 +57,13 @@ void Player::Tick(float deltaTime)
 		}
 	}
 
+	// 인터페이스 확인.
 	static ICanPlayerMove* canPlayerMoveInterface = nullptr;
 
-	// 오너십 확인.
+	// 오너십 확인 (null 확인).
 	if (!canPlayerMoveInterface && GetOwner())
 	{
+		// 인터페이스로 형변환.
 		canPlayerMoveInterface = dynamic_cast<ICanPlayerMove*>(GetOwner());
 	}
 
@@ -61,23 +71,19 @@ void Player::Tick(float deltaTime)
 	// 이동.
 	if (Input::Get().GetKeyDown(VK_RIGHT) && GetPosition().x < 20)
 	{
+		// 이동 가능 여부 판단.
 		Vector2 newPosition(GetPosition().x + 1, GetPosition().y);
 			if (canPlayerMoveInterface->CanMove(GetPosition(), newPosition))
 			{
 				SetPosition(newPosition);
 			}
 
-		// 현재 위치 가져오기.
 		//Vector2 newPosition = GetPosition();
-
-		//// x 위치 오른쪽으로 한칸 이동.
 		//newPosition.x += 1;
-
-		//// 새로운 위치 설정.
 		//SetPosition(newPosition);
 	}
 
-	// 왼쪽 방향키가 눌리고, x위치가 0번째 칸보다 오른쪽에 있으면,
+	// 이동 가능 여부 판단.
 	if (Input::Get().GetKeyDown(VK_LEFT) && GetPosition().x > 0)
 	{
 		Vector2 newPosition(GetPosition().x - 1, GetPosition().y);
@@ -86,17 +92,12 @@ void Player::Tick(float deltaTime)
 			SetPosition(newPosition);
 		}
 
-		// 현재 위치 가져오기.
 		//Vector2 newPosition = GetPosition();
-
-		//// x 위치 왼쪽으로 한칸 이동.
-		//newPosition.x -= 1;
-
-		//// 새로운 위치 설정.
+		//newPosition.x -= 1
 		//SetPosition(newPosition);
 	}
 
-	// 위쪽 방향키가 눌리고, y위치가 0번째 칸보다 왼쪽에 있으면,
+	// 이동 가능 여부 판단.
 	if (Input::Get().GetKeyDown(VK_UP) && GetPosition().y > 0)
 	{
 		Vector2 newPosition(GetPosition().x, GetPosition().y - 1);
@@ -105,17 +106,12 @@ void Player::Tick(float deltaTime)
 			SetPosition(newPosition);
 		}
 
-		// 현재 위치 가져오기.
 		//Vector2 newPosition = GetPosition();
-
-		//// x 위치 왼쪽으로 한칸 이동.
 		//newPosition.y -= 1;
-
-		//// 새로운 위치 설정.
 		//SetPosition(newPosition);
 	}
 
-	// 아래쪽 방향키가 눌리고, y위치가 20번째 칸을 안 넘어갔으면,
+	// 이동 가능 여부 판단.
 	if (Input::Get().GetKeyDown(VK_DOWN) && GetPosition().y < 15)
 	{
 		Vector2 newPosition(GetPosition().x, GetPosition().y + 1);

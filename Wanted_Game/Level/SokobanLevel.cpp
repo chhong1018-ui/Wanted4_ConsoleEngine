@@ -5,19 +5,20 @@
 #include "Actor/box.h"
 #include "Actor/Target.h"
 #include "Util/Util.h"
+#include "Render/Renderer.h"
 #include <iostream>
 
 /*
-#: 벽 (Wall)
-.: 바닥 (GRound)
-p: 플레이어 (Player)
-b: 박스 (Box)
-t: 타겟 (Target)
+#: 벽(Wall)
+.: 바닥(Ground)
+p: 플레이어(Player)
+b: 박스(Box)
+t: 타겟(Target)
 */
 
 SokobanLevel::SokobanLevel()
 {
-	// TeslActor 액터를 레벨에 추가
+	// TestActor 액터를 레벨에 추가.
 	//AddNewActor(new Player());
 	//LoadMap("Map.txt");
 	LoadMap("Stage1.txt");
@@ -32,11 +33,21 @@ void SokobanLevel::Draw()
 	// 게임 클리어인 경우. 메시지 출력.
 	if (isGameClear)
 	{
-		// 콘솔 위치.색상 설정.
+		/*
 		Util::SetConsolePosition(Vector2(30, 0));
 		Util::SetConsoleTextColor(Color::White);
+		std::cout << "Game Clear!" << std::endl;
+		*/
+		// "Game Clear!"가 Renderer의 버퍼에 안들어가 있어 화면에 안보이는 문제 발생.
+		// Renderer/Renderer.h 추가하고 std::cout에서 Renderer::Get().Submit으로 변경해 렌더러에서 출력하도록 변경함.
 
-		std::cout << "Game Clear!";
+		// Vector2(30, 0)으로 실행 시 "Game Clear"로 느낌표가 잘려 출력 됨.
+		// "Game Clear!" 이미지까지 모두 프레임 내부에 출력되도록 최종으로 X 위치를 29로 변경.
+		Renderer::Get().Submit(
+			"Game Clear!",
+			Vector2(29, 0),
+			Color::White
+		);
 	}
 }
 
@@ -65,10 +76,10 @@ void SokobanLevel::LoadMap(const char* filename)
 	// 맵 크기 파악: File Position 포인터를 파일의 끝으로 이동.
 	fseek(file, 0, SEEK_END);
 
-	// 이 위치 읽기
+	// 이 위치 읽기.
 	size_t fileSize = ftell(file);
 
-	//처음으로 되돌리기.
+	// File Position 처음으로 되돌리기.
 	rewind(file);
 
 	// 파일에서 데이터를 읽어올 버퍼 생성.
@@ -77,8 +88,8 @@ void SokobanLevel::LoadMap(const char* filename)
 	// 데이터 읽기.
 	size_t readSize = fread(data, sizeof(char), fileSize, file);
 
-	// 읽어온 문자열을 분석(파싱-parsing)해서 출력.
-	// 인덱스를 사용해 한 문자 씩 읽기.
+	// 읽어온 문자열을 분석(파싱-Parsing)해서 출력.
+	// 인덱스를 사용해 한문자씩 읽기.
 	int index = 0;
 
 	// 객체를 생성할 위치 값.
@@ -86,7 +97,7 @@ void SokobanLevel::LoadMap(const char* filename)
 
 	while (true)
 	{
-		//종료 조건.
+		// 종료 조건.
 		if (index >= fileSize)
 		{
 			break;
@@ -100,20 +111,20 @@ void SokobanLevel::LoadMap(const char* filename)
 		if (mapCharacter == '\n')
 		{
 			//std::cout << "\n";
-			// y좌표는 하나 늘리고 x좌표 초기화.
+			// y좌표는 하나 늘리고, x 좌표 초기화.
 			++position.y;
 			position.x = 0;
 			continue;
 		}
 
 		/*
-		#: 벽 (Wall)
-		.: 바닥 (GRound)
-		p: 플레이어 (Player)
-		b: 박스 (Box)
-		t: 타겟 (Target)
+		#: 벽(Wall)
+		.: 바닥(Ground)
+		p: 플레이어(Player)
+		b: 박스(Box)
+		t: 타겟(Target)
 		*/
-		// 한 문자씩 처리.
+		// 한문자씩 처리.
 		switch (mapCharacter)
 		{
 		case '#':
@@ -162,7 +173,7 @@ bool SokobanLevel::CanMove(
 	const Wanted::Vector2& nextPosition)
 {
 	// 레벨에 있는 박스 액터 모으기.
-	//박스는 플레이어가 밀기 등 추가적으로 처리해야 하기 때문.
+	// 박스는 플레이어가 밀기 등 추가적으로 처리해야하기 때문.
 	std::vector<Actor*> boxes;
 
 	// 레벨에 배치된 전체 액터를 순회하면서 박스 찾기.
@@ -188,21 +199,21 @@ bool SokobanLevel::CanMove(
 		}
 	}
 
-	//  경우의 수 처리.
+	// 경우의 수 처리.
 	// 이동하려는 곳에 박스가 있는 경우.
 	if (boxActor)
 	{
 		// #1: 박스를 이동시키려는 위치에 다른 박스가 또 있는지 확인.
-		// 두 위치 사이에서 이동 방향 구하기. (벡커의 뺄셈 활용).
-		// 이동 로직에서 두 벡터를 더한다는 것은 
+		// 두 위치 사이에서 이동 방향 구하기 (벡터의 뺄셈 활용).
+		// 이동 로직에서 두 벡터를 더한다는 것은
 		// 둘 중 하나는 위치(Location)이고 다른 하나는 벡터(Vector).
 		Vector2 direction = nextPosition - playerPosition;
 		Vector2 newPosition = boxActor->GetPosition() + direction;
 
-		// 검색.
+		// 박스 검색.
 		for (Actor* const otherBox : boxes)
 		{
-			// 앞에서 검색한 바스와 같다면 건너뛰기
+			// 앞에서 검색한 박스와 같다면 건너뛰기.
 			if (otherBox == boxActor)
 			{
 				continue;
@@ -232,6 +243,7 @@ bool SokobanLevel::CanMove(
 				{
 					// 박스 이동 처리.
 					boxActor->SetPosition(newPosition);
+
 					// 게임 점수 확인.
 					isGameClear = CheckGameClear();
 
@@ -242,13 +254,14 @@ bool SokobanLevel::CanMove(
 		}
 	}
 
-	// 이동하려는 곳에 박스가 없는 경우
+	// 이동하려는 곳에 박스가 없는 경우.
 	// -> 이동하려는 곳에 있는 액터가 벽이 아니면 이동 가능.
 	for (Actor* const actor : actors)
 	{
+		// 먼저, 이동하려는 위치에 있는 액터 검색.
 		if (actor->GetPosition() == nextPosition)
 		{
-			// 이 액터가 벽인지 확인
+			// 이 액터가 벽인지 확인.
 			if (actor->IsTypeOf<Wall>())
 			{
 				return false;
@@ -272,7 +285,7 @@ bool SokobanLevel::CheckGameClear()
 	std::vector<Actor*> boxes;
 	std::vector<Actor*> targets;
 
-	// 레벨에 배치된 배열 순회하면서 두 액터 필터링
+	// 레벨에 배치된 배열 순회하면서 두 액터 필터링.
 	for (Actor* const actor : actors)
 	{
 		// 박스인 경우 박스 배열에 추가.
@@ -282,14 +295,14 @@ bool SokobanLevel::CheckGameClear()
 			continue;
 		}
 
-		// 타겟의 경우 박스 배열에 추가.
+		// 타겟의 경우 타겟 배열에 추가.
 		if (actor->IsTypeOf<Target>())
 		{
 			targets.emplace_back(actor);
 		}
 	}
 
-	// 점수 확인(박스의 위치가 타겟의 위치와 같은지 비교)
+	// 점수 확인 (박스의 위치가 타겟의 위치와 같은지 비교).
 	for (Actor* const box : boxes)
 	{
 		for (Actor* const target : targets)

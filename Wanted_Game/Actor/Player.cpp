@@ -14,7 +14,7 @@
 using namespace Wanted;
 
 Player::Player(const Vector2& position)
-	: super('P', position, Color::Red)
+	: super("P", position, Color::Red)
 {
 	// 그리기 우선순위 높게 설정.
 	sortingOrder = 10;
@@ -42,7 +42,7 @@ void Player::Tick(float deltaTime)
 	// Q키 종료.
 	if (Wanted::Input::Get().GetKeyDown('Q'))
 	{
-		// todo: 게임 엔진 종료 요청.
+		// 게임 엔진 종료 요청.
 		Wanted::Engine::Get().QuitEngine();
 	}
 

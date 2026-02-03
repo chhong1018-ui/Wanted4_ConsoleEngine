@@ -3,7 +3,7 @@
 #include <iostream>
 
 // Ctrl+Home키로 파일 최상단 이동.
-
+// Rider는 헤더 자동 추가 해줌.
 namespace Wanted
 {
 	// 전역 변수 초기화.

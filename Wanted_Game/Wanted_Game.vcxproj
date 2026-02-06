@@ -157,6 +157,7 @@
     <ClCompile Include="Actor\Player.cpp" />
     <ClCompile Include="Actor\Target.cpp" />
     <ClCompile Include="Actor\Wall.cpp" />
+    <ClCompile Include="BFS\BFS.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Level\MenuLevel.cpp" />
     <ClCompile Include="Level\SokobanLevel.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Actor\Player.h" />
     <ClInclude Include="Actor\Target.h" />
     <ClInclude Include="Actor\Wall.h" />
+    <ClInclude Include="BFS\BFS.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Interface\ICanPlayerMove.h" />
     <ClInclude Include="Level\MenuLevel.h" />

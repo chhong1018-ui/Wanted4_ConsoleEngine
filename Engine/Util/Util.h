@@ -1,14 +1,15 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Math/Vector.h"
 #include "Math/Color.h"
+#include <Windows.h>
 
 using namespace Wanted;
 
-// ÇïÆÛ ±â´É Á¦°ø.
+// í—¬í¼(Helper) ê¸°ëŠ¥ ì œê³µ.
 namespace Util
 {
-	// ÄÜ¼Ö Ä¿¼­ À§Ä¡ ÀÌµ¿(¼³Á¤)ÇÏ´Â ÇÔ¼ö.
+	// ì½˜ì†” ì»¤ì„œ ìœ„ì¹˜ ì´ë™(ì„¤ì •)í•˜ëŠ” í•¨ìˆ˜.
 	inline void SetConsolePosition(const Vector2& position)
 	{
 		SetConsoleCursorPosition(
@@ -17,7 +18,7 @@ namespace Util
 		);
 	}
 
-	// ÄÜ¼Ö ÅØ½ºÆ® ¼³Á¤ ÇÔ¼ö.
+	// ì½˜ì†” í…ìŠ¤íŠ¸ ì„¤ì • í•¨ìˆ˜.
 	inline void SetConsoleTextColor(Color color)
 	{
 		SetConsoleTextAttribute(
@@ -25,7 +26,7 @@ namespace Util
 			static_cast<unsigned short>(color)
 		);
 	}
-	//Ä¿¼­ ²ô±â
+	// ì»¤ì„œ ë„ê¸°.
 	inline void TurnOffCursor()
 	{
 		CONSOLE_CURSOR_INFO info = {};
@@ -41,7 +42,7 @@ namespace Util
 		);
 	}
 
-	//Ä¿¼­ ÄÑ±â
+	// ì»¤ì„œ ì¼œê¸°.
 	inline void TurnOnCursor()
 	{
 		CONSOLE_CURSOR_INFO info = {};
@@ -58,7 +59,7 @@ namespace Util
 	}
 }
 
-// ¸Ş¸ğ¸® Á¤¸® ÇÔ¼ö.
+// ë©”ëª¨ë¦¬ ì •ë¦¬ í•¨ìˆ˜.
 template<typename T>
 void SafeDelete(T*& t)
 {

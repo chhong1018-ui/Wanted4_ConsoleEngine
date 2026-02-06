@@ -3,6 +3,7 @@
 #include "Engine/Engine.h"
 #include "Actor/Box.h"
 #include "Level/Level.h"
+#include "Level/SokobanLevel.h"
 
 #include "Game/Game.h"
 
@@ -69,7 +70,7 @@ void Player::Tick(float deltaTime)
 
 
 	// 이동.
-	if (Input::Get().GetKeyDown(VK_RIGHT) && GetPosition().x < 20)
+	if (Input::Get().GetKey(VK_RIGHT) && GetPosition().x < 40)
 	{
 		// 이동 가능 여부 판단.
 		Vector2 newPosition(GetPosition().x + 1, GetPosition().y);
@@ -84,7 +85,7 @@ void Player::Tick(float deltaTime)
 	}
 
 	// 이동 가능 여부 판단.
-	if (Input::Get().GetKeyDown(VK_LEFT) && GetPosition().x > 0)
+	if (Input::Get().GetKey(VK_LEFT) && GetPosition().x > 0)
 	{
 		Vector2 newPosition(GetPosition().x - 1, GetPosition().y);
 		if (canPlayerMoveInterface->CanMove(GetPosition(), newPosition))
@@ -98,7 +99,7 @@ void Player::Tick(float deltaTime)
 	}
 
 	// 이동 가능 여부 판단.
-	if (Input::Get().GetKeyDown(VK_UP) && GetPosition().y > 0)
+	if (Input::Get().GetKey(VK_UP) && GetPosition().y > 0)
 	{
 		Vector2 newPosition(GetPosition().x, GetPosition().y - 1);
 		if (canPlayerMoveInterface->CanMove(GetPosition(), newPosition))
@@ -112,7 +113,7 @@ void Player::Tick(float deltaTime)
 	}
 
 	// 이동 가능 여부 판단.
-	if (Input::Get().GetKeyDown(VK_DOWN) && GetPosition().y < 15)
+	if (Input::Get().GetKey(VK_DOWN) && GetPosition().y < 40)
 	{
 		Vector2 newPosition(GetPosition().x, GetPosition().y + 1);
 		if (canPlayerMoveInterface->CanMove(GetPosition(), newPosition))

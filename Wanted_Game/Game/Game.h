@@ -20,6 +20,8 @@ public:
 	Game();
 	~Game();
 
+	void StartGame();
+
 	void ToggleMenu();
 
 	static Game& Get();

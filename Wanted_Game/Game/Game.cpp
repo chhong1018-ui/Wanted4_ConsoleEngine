@@ -36,6 +36,11 @@ Game::~Game()
 	levels.clear();
 }
 
+// todo: 게임보다 메뉴가 먼저 나오게, 시작 메뉴 추가.
+void Game::StartGame()
+{
+}
+
 void Game::ToggleMenu()
 {
 	// system은 콘솔 명령어 실행 함수.

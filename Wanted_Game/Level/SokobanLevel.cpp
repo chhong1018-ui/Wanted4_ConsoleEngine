@@ -3,6 +3,7 @@
 #include "Actor/Wall.h"
 #include "Actor/Ground.h"
 #include "Actor/box.h"
+#include "Actor/Enemy.h"
 #include "Actor/Target.h"
 #include "Util/Util.h"
 #include "Render/Renderer.h"
@@ -144,7 +145,6 @@ void SokobanLevel::LoadMap(const char* filename)
 		switch (mapCharacter)
 		{
 		case '#':
-		case '1':
 			//std::cout << "#";
 			AddNewActor(new Wall(position));
 			break;
@@ -170,6 +170,12 @@ void SokobanLevel::LoadMap(const char* filename)
 			//std::cout << "T";
 			AddNewActor(new Target(position));
 			++targetScore;
+			break;
+		case 'e':
+			// Enemy는 이동 가능함.
+			// Enemy가 옮겨졌을 때 그 밑에 땅이 있어야 함.
+			AddNewActor(new Enemy(position));
+			AddNewActor(new Ground(position));
 			break;
 		}
 

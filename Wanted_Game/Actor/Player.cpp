@@ -1,4 +1,4 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 #include "Core/Input.h"
 #include "Engine/Engine.h"
 #include "Actor/Box.h"
@@ -17,14 +17,14 @@ using namespace Wanted;
 Player::Player(const Vector2& position)
 	: super("P", position, Color::Green)
 {
-	// ±×¸®±â ¿ì¼±¼øÀ§ ³ô°Ô ¼³Á¤.
+	// ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	sortingOrder = 10;
 }
 
 void Player::BeginPlay()
 {
-	// »óÀ§ ÇÔ¼ö È£Ãâ.
-	// C++´Â ºÎ¸ðÇÔ¼ö °¡¸®Å°´Â Æ÷ÀÎÅÍ°¡ ¾øÀ½.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ È£ï¿½ï¿½.
+	// C++ï¿½ï¿½ ï¿½Î¸ï¿½ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	Actor::BeginPlay();
 
 	//std::cout << "TestActor::BeginPlay().\n";
@@ -33,58 +33,57 @@ void Player::BeginPlay()
 void Player::Tick(float deltaTime)
 {
 	Actor::Tick(deltaTime);
-
 	if (Wanted::Input::Get().GetKeyDown(VK_ESCAPE))
 	{
 		Game::Get().ToggleMenu();
 		return;
 	}
 
-	// QÅ° Á¾·á.
+	// QÅ° ï¿½ï¿½ï¿½ï¿½.
 	if (Wanted::Input::Get().GetKeyDown('Q'))
 	{
-		// °ÔÀÓ ¿£Áø Á¾·á ¿äÃ».
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã».
 		Wanted::Engine::Get().QuitEngine();
 	}
 
-	// ½ºÆäÀÌ½º·Î ¹Ú½º »ý¼º.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	// vk -> virtual key.
 	if (Input::Get().GetKeyDown(VK_SPACE))
 	{
-		// ¹Ú½º »ý¼º.
+		// ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		if (owner)
 		{
 			owner->AddNewActor(new Box(GetPosition()));
 		}
 	}
 
-	// ÀÎÅÍÆäÀÌ½º È®ÀÎ.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ È®ï¿½ï¿½.
 	static ICanPlayerMove* canPlayerMoveInterface = nullptr;
 
-	// ¿À³Ê½Ê È®ÀÎ (null È®ÀÎ).
+	// ï¿½ï¿½ï¿½Ê½ï¿½ È®ï¿½ï¿½ (null È®ï¿½ï¿½).
 	if (!canPlayerMoveInterface && GetOwner())
 	{
-		// ÀÎÅÍÆäÀÌ½º·Î Çüº¯È¯.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È¯.
 		canPlayerMoveInterface = dynamic_cast<ICanPlayerMove*>(GetOwner());
 	}
 
 
-	// ÀÌµ¿.
-	if (Input::Get().GetKey(VK_RIGHT) && GetPosition().x < 40)
+	// ï¿½Ìµï¿½.
+	if (Input::Get().GetKey(VK_RIGHT) && GetPosition().x < 200)
 	{
-		// ÀÌµ¿ °¡´É ¿©ºÎ ÆÇ´Ü.
+		// ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½.
 		Vector2 newPosition(GetPosition().x + 1, GetPosition().y);
-			if (canPlayerMoveInterface->CanMove(GetPosition(), newPosition))
-			{
-				SetPosition(newPosition);
-			}
+		if (canPlayerMoveInterface->CanMove(GetPosition(), newPosition))
+		{
+			SetPosition(newPosition);
+		}
 
 		//Vector2 newPosition = GetPosition();
 		//newPosition.x += 1;
 		//SetPosition(newPosition);
 	}
 
-	// ÀÌµ¿ °¡´É ¿©ºÎ ÆÇ´Ü.
+	// ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½.
 	if (Input::Get().GetKey(VK_LEFT) && GetPosition().x > 0)
 	{
 		Vector2 newPosition(GetPosition().x - 1, GetPosition().y);
@@ -98,7 +97,7 @@ void Player::Tick(float deltaTime)
 		//SetPosition(newPosition);
 	}
 
-	// ÀÌµ¿ °¡´É ¿©ºÎ ÆÇ´Ü.
+	// ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½.
 	if (Input::Get().GetKey(VK_UP) && GetPosition().y > 0)
 	{
 		Vector2 newPosition(GetPosition().x, GetPosition().y - 1);
@@ -112,8 +111,8 @@ void Player::Tick(float deltaTime)
 		//SetPosition(newPosition);
 	}
 
-	// ÀÌµ¿ °¡´É ¿©ºÎ ÆÇ´Ü.
-	if (Input::Get().GetKey(VK_DOWN) && GetPosition().y < 40)
+	// ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½.
+	if (Input::Get().GetKey(VK_DOWN) && GetPosition().y < 200)
 	{
 		Vector2 newPosition(GetPosition().x, GetPosition().y + 1);
 		if (canPlayerMoveInterface->CanMove(GetPosition(), newPosition))

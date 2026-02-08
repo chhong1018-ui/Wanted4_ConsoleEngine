@@ -7,6 +7,10 @@
 #include "Actor/Target.h"
 #include "Util/Util.h"
 #include "Render/Renderer.h"
+#include "Engine/Engine.h"
+#include "Game/Game.h"
+#include "Level/MenuLevel.h"
+#include "Core/Input.h"
 #include <iostream>
 
 /*
@@ -17,9 +21,11 @@ b: 박스(Box)
 t: 타겟(Target)
 */
 
+using namespace Wanted;
+
 SokobanLevel::SokobanLevel()
 {
-	// TestActor ���͸� ������ �߰�.
+	// TestActor 테스트 액터를 추가.
 	//AddNewActor(new Player());
 	LoadMap("Map.txt");
 	//LoadMap("Stage1.txt");
@@ -44,28 +50,75 @@ void SokobanLevel::Draw()
 
 		// Vector2(30, 0)으로 실행 시 "Game Clear"로 느낌표가 잘려 출력 됨.
 		// "Game Clear!" 이미지까지 모두 프레임 내부에 출력되도록 최종으로 X 위치를 29로 변경.
-		Renderer::Get().Submit(
+		Renderer::Get().SubmitCentered(
 			"Game Clear!",
-			Vector2(31, 0),
-			Color::White
+			0,
+			Color::Green
 		);
-		Renderer::Get().Submit(
+		Renderer::Get().SubmitCentered(
 			"Press ESC to return to the menu.",
-			Vector2(31, 2),
-			Color::White
+			2,
+			Color::Green
 		);
-		Renderer::Get().Submit(
-			"Press 'Q' to Quit Game.",
-			Vector2(31, 4),
-			Color::White
+		Renderer::Get().SubmitCentered(
+			"Press 'Q' to Quit.",
+			4,
+			Color::Green
 		);
+	}
+
+	if (isGameOver)
+	{
+		Renderer::Get().SubmitCentered(
+			"Game Over. Returning to Menu in 2s...",
+			0,
+			Color::Red
+		);
+		Renderer::Get().SubmitCentered(
+			"Or you can press 'Q' to Quit Game.",
+			2,
+			Color::Red
+		);
+
+		// 게임 오버 시 타이머 처리는 Tick 함수에서 수행됩니다.
 	}
 }
 
 void SokobanLevel::Tick(float deltaTime)
 {
 	Level::Tick(deltaTime);
+	
 	isGameClear = CheckGameClear();
+
+	isGameOver = CheckGameOver();
+
+	// 게임 오버 상태가 되었고, 아직 타이머가 시작되지 않았다면 타이머 시작
+	if (isGameOver != isWaitingForToggle)
+	{
+		isWaitingForToggle = true;
+		GameOverTimer = 2.0f; // 2초 대기 시간 설정
+	}
+
+	// 타이머가 활성화된 경우 시간 감소
+	if (isWaitingForToggle)
+	{
+		GameOverTimer -= deltaTime;
+
+		// 타이머가 만료되면 메뉴로 전환
+		if (GameOverTimer <= 0.0f)
+		{
+			Game::Get().ToggleMenu();
+			isWaitingForToggle = false; // 타이머 비활성화
+		}
+	}
+
+	if (isGameOver)
+	{
+		if (Wanted::Input::Get().GetKeyDown(VK_ESCAPE))
+		{
+
+		}
+	}
 }
 
 void SokobanLevel::LoadMap(const char* filename)
@@ -200,6 +253,11 @@ bool SokobanLevel::CanMove(
 		return false;
 	}
 
+	if (isGameOver)
+	{
+		return false;
+	}
+
 	// 레벨에 있는 박스 액터 모으기.
 	// 박스는 플레이어가 밀기 등 추가적으로 처리해야하기 때문.
 	std::vector<Actor*> boxes;
@@ -321,6 +379,30 @@ bool SokobanLevel::CheckGameClear()
 			if (playerPosition == other->GetPosition())
 			{
 				return true;   // 즉시 클리어
+			}
+		}
+	}
+
+	return false;
+}
+
+bool SokobanLevel::CheckGameOver()
+{
+	for (Actor* const actor : actors)
+	{
+		if (!actor->IsTypeOf<Player>())
+			continue;
+
+		Vector2 playerPosition = actor->GetPosition();
+
+		for (Actor* const other : actors)
+		{
+			if (!other->IsTypeOf<Enemy>())
+				continue;
+
+			if (playerPosition == other->GetPosition())
+			{
+				return true;   // 게임 오버 판정.
 			}
 		}
 	}

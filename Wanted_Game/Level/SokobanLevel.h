@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Level/Level.h"
 #include "Interface/ICanPlayerMove.h"
@@ -12,13 +12,13 @@ class SokobanLevel
 public:
 	SokobanLevel();
 
-	// ÀÌº¥Æ® ÇÔ¼ö ¿À¹ö¶óÀÌµå.
+	// ì´ë²¤íŠ¸ í•¨ìˆ˜ ì˜¤ë²„ë¼ì´ë“œ.
 	virtual void Draw() override;
 
 	void Tick(float deltaTime) override;
 
 private:
-	// °ÔÀÓ¿¡¼­ »ç¿ëÇÒ ¸ÊÀ» ·ÎµåÇÏ´Â ÇÔ¼ö.
+	// ê²Œì„ ë‚´ì—ì„œ í•„ìš”í•œ ë¦¬ì†ŒìŠ¤ë¥¼ ë¡œë“œí•˜ëŠ” í•¨ìˆ˜.
 	void LoadMap(const char* filename);
 
 	//Inherited via ICanPlayerMove
@@ -26,13 +26,22 @@ private:
 		const Wanted::Vector2& playerPosition,
 		const Wanted::Vector2& newtPosition) override;
 
-	//°ÔÀÓ Å¬¸®¾î È®ÀÎ ÇÔ¼ö.
+	// ê²Œì„ í´ë¦¬ì–´ í™•ì¸ í•¨ìˆ˜.
 	bool CheckGameClear();
 
+	// ê²Œì„ ì˜¤ë²„ í™•ì¸ í•¨ìˆ˜.
+	bool CheckGameOver();
+
+	float GameOverTimer = 2.0f;
+	bool isWaitingForToggle = false;
+
 private:
-	// È¹µæÇØ¾ß ÇÏ´Â ¸ñÇ¥ Á¡¼ö.
+	// í´ë¦¬ì–´í•´ì•¼ í•˜ëŠ” ëª©í‘œ ì ìˆ˜.
 	int targetScore = 0;
 
-	// °ÔÀÓ Å¬¸®¾î ¿©ºÎ¸¦ ¾Ë·ÁÁÖ´Â º¯¼ö
+	// ê²Œì„ í´ë¦¬ì–´ ìƒíƒœë¥¼ ì•Œë¦¬ëŠ” ë³€ìˆ˜
 	bool isGameClear = false;
+
+	// ê²Œì„ ì˜¤ë²„ ìƒíƒœë¥¼ ì•Œë¦¬ëŠ” ë³€ìˆ˜.
+	bool isGameOver = false;
 };

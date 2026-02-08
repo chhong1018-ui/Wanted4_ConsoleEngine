@@ -78,7 +78,7 @@ void MenuLevel::Draw()
 
 	//std::cout << "Sokoban Game\n\n";
 
-	Renderer::Get().Submit("Sokoban Game", Vector2::Zero);
+	Renderer::Get().SubmitCentered("Maze Runner", 0);
 
 	// 메뉴 아이템 출력
 	for (int ix = 0; ix < static_cast<int>(items.size()); ++ix)
@@ -86,9 +86,9 @@ void MenuLevel::Draw()
 		Color textColor =
 			(ix == currentIndex) ? selectedColor : unselectedColor;
 
-		Renderer::Get().Submit(
+		Renderer::Get().SubmitCentered(
 			items[ix]->text,
-			Vector2(0, 2 + ix),
+			2,
 			textColor);
 
 		//Util::SetConsoleTextColor(textColor);

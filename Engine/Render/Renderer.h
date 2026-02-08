@@ -60,6 +60,13 @@ namespace Wanted
 			int sortingOrder = 0
 		);
 
+		void SubmitCentered(
+			const char* text,
+			int yOffset = 0,
+			Color color = Color::White,
+			int sortingOrder = 0
+		);
+
 		// ½Ì±ÛÅæ Á¢±Ù ÇÔ¼ö.
 		static Renderer& Get();
 

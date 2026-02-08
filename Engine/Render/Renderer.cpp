@@ -2,6 +2,9 @@
 #include "ScreenBuffer.h"
 #include "Util/Util.h"
 
+#include <iostream>
+#include <string>
+
 namespace Wanted
 {
 	Renderer::Frame::Frame(int bufferCount)
@@ -203,6 +206,24 @@ namespace Wanted
 		RenderCommand command = {};
 		command.text = text;
 		command.position = position;
+		command.color = color;
+		command.sortingOrder = sortingOrder;
+
+		renderQueue.emplace_back(command);
+	}
+
+	void Renderer::SubmitCentered(const char* text, int yOffset, Color color, int sortingOrder)
+	{
+		int textlength = static_cast<int>(strlen(text));
+
+		int centerX = (screenSize.x - textlength) / 2;
+		if (centerX < 0) centerX = 0;
+
+		int centerY = screenSize.y / 2 + yOffset;
+
+		RenderCommand command = {};
+		command.text = text;
+		command.position = Vector2(centerX, centerY);
 		command.color = color;
 		command.sortingOrder = sortingOrder;
 

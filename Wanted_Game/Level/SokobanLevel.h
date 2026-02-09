@@ -17,9 +17,11 @@ public:
 
 	void Tick(float deltaTime) override;
 
+	void SetMoveChecker(ICanPlayerMove* checker);
+
 private:
 	// 게임 내에서 필요한 리소스를 로드하는 함수.
-	void LoadMap(const char* filename);
+	void LoadMap(const char* filename, int startX = 0, int startY = 0);
 
 	//Inherited via ICanPlayerMove
 	virtual bool CanMove(
@@ -44,4 +46,20 @@ private:
 
 	// 게임 오버 상태를 알리는 변수.
 	bool isGameOver = false;
+
+	int mapWidth = 0;
+	int mapHeight = 0;
+
+	const char* currentMapFilename = nullptr;
+
+public: // Added public access specifier for getter methods
+    int GetMapWidth() const { return mapWidth; }
+    int GetMapHeight() const { return mapHeight; }
+
+
+private:
+	// 맵 크기 계산 함수.
+	Wanted::Vector2 CalculateMapDimensions(const char* filename);
+
+	ICanPlayerMove* moveChecker = nullptr;
 };

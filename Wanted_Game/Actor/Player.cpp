@@ -17,14 +17,13 @@ using namespace Wanted;
 Player::Player(const Vector2& position)
 	: super("P", position, Color::Green)
 {
-	// �׸��� �켱���� ���� ����.
 	sortingOrder = 10;
 }
 
 void Player::BeginPlay()
 {
-	// ���� �Լ� ȣ��.
-	// C++�� �θ��Լ� ����Ű�� �����Ͱ� ����.
+	// 상위함수 호출.
+	// c++는 부모 함수 가리키는 포인터가 없음.
 	Actor::BeginPlay();
 
 	//std::cout << "TestActor::BeginPlay().\n";
@@ -33,45 +32,35 @@ void Player::BeginPlay()
 void Player::Tick(float deltaTime)
 {
 	Actor::Tick(deltaTime);
+	// vk -> virtual key.
 	if (Wanted::Input::Get().GetKeyDown(VK_ESCAPE))
 	{
+		// esc로 레벨 이동(Menu<->Game)
 		Game::Get().ToggleMenu();
 		return;
 	}
 
-	// QŰ ����.
 	if (Wanted::Input::Get().GetKeyDown('Q'))
 	{
-		// ���� ���� ���� ��û.
+		// Q를 눌러 게임 종료.
 		Wanted::Engine::Get().QuitEngine();
 	}
 
-	// �����̽��� �ڽ� ����.
-	// vk -> virtual key.
-	if (Input::Get().GetKeyDown(VK_SPACE))
-	{
-		// �ڽ� ����.
-		if (owner)
-		{
-			owner->AddNewActor(new Box(GetPosition()));
-		}
-	}
-
-	// �������̽� Ȯ��.
+	// 인터페이스 확인.
 	static ICanPlayerMove* canPlayerMoveInterface = nullptr;
 
-	// ���ʽ� Ȯ�� (null Ȯ��).
+	// 오너십 확인 (null 확인).
 	if (!canPlayerMoveInterface && GetOwner())
 	{
-		// �������̽��� ����ȯ.
+		// 인터페이스로 형 변환.
 		canPlayerMoveInterface = dynamic_cast<ICanPlayerMove*>(GetOwner());
 	}
 
 
-	// �̵�.
-	if (Input::Get().GetKey(VK_RIGHT) && GetPosition().x < 200)
+	// 오른쪽으로 이동하는 키.
+	if (Input::Get().GetKey(VK_RIGHT) && GetPosition().x < 120)
 	{
-		// �̵� ���� ���� �Ǵ�.
+		// 이동 가능 여부 판단.
 		Vector2 newPosition(GetPosition().x + 1, GetPosition().y);
 		if (canPlayerMoveInterface->CanMove(GetPosition(), newPosition))
 		{
@@ -83,7 +72,7 @@ void Player::Tick(float deltaTime)
 		//SetPosition(newPosition);
 	}
 
-	// �̵� ���� ���� �Ǵ�.
+	// 왼쪽으로 이동하는 키.
 	if (Input::Get().GetKey(VK_LEFT) && GetPosition().x > 0)
 	{
 		Vector2 newPosition(GetPosition().x - 1, GetPosition().y);
@@ -97,7 +86,7 @@ void Player::Tick(float deltaTime)
 		//SetPosition(newPosition);
 	}
 
-	// �̵� ���� ���� �Ǵ�.
+	// 위로 이동하는 키.
 	if (Input::Get().GetKey(VK_UP) && GetPosition().y > 0)
 	{
 		Vector2 newPosition(GetPosition().x, GetPosition().y - 1);
@@ -111,8 +100,8 @@ void Player::Tick(float deltaTime)
 		//SetPosition(newPosition);
 	}
 
-	// �̵� ���� ���� �Ǵ�.
-	if (Input::Get().GetKey(VK_DOWN) && GetPosition().y < 200)
+	// 아래로 이동하는 키.
+	if (Input::Get().GetKey(VK_DOWN) && GetPosition().y < 30)
 	{
 		Vector2 newPosition(GetPosition().x, GetPosition().y + 1);
 		if (canPlayerMoveInterface->CanMove(GetPosition(), newPosition))

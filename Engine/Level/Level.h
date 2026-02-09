@@ -32,11 +32,14 @@ namespace Wanted
 
 		void ProcessAddAndDestroyActors();
 
+		const std::vector<Actor*>& GetActors() const { return actors; }
+
 	protected:
 		// ���� �迭.
 		std::vector<Actor*> actors;
 
 		// ���� �߿� �߰� ��û�� ������ �迭
 		std::vector<Actor*> addRequestedActors;
+
 	};
 }

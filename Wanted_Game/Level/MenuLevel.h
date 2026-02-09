@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Level/Level.h"
+#include "Level/SokobanLevel.h"
 #include "Math/Color.h"
 #include <vector>
 
 using namespace Wanted;
 
-// ¸Þ´º ¾ÆÀÌÅÛ ±¸Á¶Ã¼.
+// ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼.
 struct MenuItem
 {
-	// ¸Þ´º ¼±ÅÃµÆÀ» ¶§ ½ÇÇà µÉ ÇÔ¼öÀÇ Å¸ÀÔ
+	// ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½
 	using OnSelected = void (*)();
 
 	MenuItem(const char* text, OnSelected onSelected)
@@ -30,10 +31,10 @@ struct MenuItem
 		}
 	}
 
-	// ¸Þ´º ÅØ½ºÆ®.
+	// ï¿½Þ´ï¿½ ï¿½Ø½ï¿½Æ®.
 	char* text = nullptr;
 
-	// ¸Þ´º ¼±ÅÃµÆÀ» ¶§ ½ÇÇà µÉ ·ÎÁ÷(ÇÔ¼ö).
+	// ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Ô¼ï¿½).
 	OnSelected onSelected = nullptr;
 };
 
@@ -46,20 +47,20 @@ public:
 	MenuLevel();
 	~MenuLevel();
 
-	// ÀÌº¥Æ® ÇÔ¼ö ¿À¹ö¶óÀÌµå
+	// ï¿½Ìºï¿½Æ® ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½
 	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
 
 private:
-	// ÇöÀç È°¼ºÈ­ µÈ ¸Å´º ¾ÆÀÌÅÛ ÀÎµ¦½º
+	// ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­ ï¿½ï¿½ ï¿½Å´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½
 	int currentIndex = 0;
 
-	// ¼±ÅÃ µÈ ¾ÆÀÌÅÛÀÇ »ö»ó.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	Color selectedColor = Color::Green;
 
-	// ¼±ÅÃµÇÁö ¾ÊÀº ¾ÆÀÌÅÛÀÇ »ö»ó.
+	// ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	Color unselectedColor = Color::White;
 
-	// ¸Å´º ¾ÆÀÌÅÛ ¹è¿­.
+	// ï¿½Å´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­.
 	std::vector<MenuItem*> items;
 };

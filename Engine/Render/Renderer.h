@@ -67,6 +67,8 @@ namespace Wanted
 			int sortingOrder = 0
 		);
 
+		inline const Vector2& GetScreenSize() const { return screenSize; }
+
 		// ½Ì±ÛÅæ Á¢±Ù ÇÔ¼ö.
 		static Renderer& Get();
 

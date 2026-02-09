@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/Engine.h"
 #include <vector>
 
 using namespace Wanted;
 
-// ·¹º§ °ü¸®¿¡ »ç¿ëÇÒ ¿­°ÅÇü
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 enum class State
 {
 	//None = -1,
@@ -24,16 +24,18 @@ public:
 
 	void ToggleMenu();
 
+	Level* GetCurrentLevel();
+
 	static Game& Get();
 
 private:
 	//
 	std::vector<Level*> levels;
 
-	// ÇöÀç È°¼ºÈ­ µÈ 
+	// ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­ ï¿½ï¿½ 
 	State state = State::GamePlay;
 
-	// ½Ì±ÛÅæ ±¸ÇöÀ» À§ÇÑ ÇÔ¼ö.
+	// ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½.
 	static Game* instance;
 };
 

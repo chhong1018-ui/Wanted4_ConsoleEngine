@@ -1,4 +1,4 @@
-#include "Game.h"
+ï»¿#include "Game.h"
 #include <iostream>
 #include "Level/SokobanLevel.h"
 #include "Level/MenuLevel.h"
@@ -9,48 +9,49 @@ Game::Game()
 {
 	instance = this;
 
-	// µÎ ·¹º§ »ý¼º ¹× ¹è¿­¿¡ Ãß°¡
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ß°ï¿½
 	levels.emplace_back(new SokobanLevel());
 	levels.emplace_back(new MenuLevel());
 
-	// ½ÃÀÛ »óÅÂ(·¹º§) ¼³Á¤.
-	state = State::GamePlay;
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½.
+	state = State::Menu;
 
-	// °ÔÀÓ ½ÃÀÛ ½Ã È°¼ºÈ­ ÇÒ ·¹º§ ¼³Á¤.
-	mainLevel = levels[0];
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È°ï¿½ï¿½È­ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+	mainLevel = levels[1];
+}
+
+Level* Game::GetCurrentLevel()
+{
+	return mainLevel;
 }
 
 Game::~Game()
 {
-	// Áßº¹ Á¦°Å ¹æÁö.
+	// ï¿½ßºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	mainLevel = nullptr;
 
-	// ¸ðµç ·¹º§ »èÁ¦.
+	// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	for (Level*& level : levels)
 	{
 		delete level;
 		level = nullptr;
 	}
 
-	// ¹è¿­ Á¤¸®.
+	// ï¿½è¿­ ï¿½ï¿½ï¿½ï¿½.
 	levels.clear();
 }
 
-// todo: °ÔÀÓº¸´Ù ¸Þ´º°¡ ¸ÕÀú ³ª¿À°Ô, ½ÃÀÛ ¸Þ´º Ãß°¡.
+// todo: ï¿½ï¿½ï¿½Óºï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ ï¿½ß°ï¿½.
 void Game::StartGame()
 {
+
 }
 
 void Game::ToggleMenu()
 {
-	// systemÀº ÄÜ¼Ö ¸í·É¾î ½ÇÇà ÇÔ¼ö.
 	// cls -> clear screen.
 	system("cls");
 
-	// º¯°æÇÒ ÀÎµ¦½º °è»ê.
-	// ÇöÀç È°¼º ·¹º§ ÀÎµ¦½º°¡ 1ÀÌ¸é 0À¸·Î.
-	// ÇöÀç È°¼º ·¹º§ ÀÎµ¦½º°¡ 0ÀÌ¸é 1À¸·Î.
-	// ¸¶¹ýÀÇ °ø½Ä - (1-x) -> OneMinus.
 	int stateIndex = (int)state;	// static_cast
 	int nextState = 1 - stateIndex;	// one - x.
 	state = (State)nextState;	

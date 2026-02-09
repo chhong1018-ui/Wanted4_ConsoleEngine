@@ -1,4 +1,4 @@
-#include "MenuLevel.h"
+ï»¿#include "MenuLevel.h"
 #include "Game/Game.h"
 #include "Core/Input.h"
 #include "Util/Util.h"
@@ -7,12 +7,12 @@
 
 MenuLevel::MenuLevel()
 {
-	// ¸Ş´º ¾ÆÀÌÅÛ »ı¼º
+	// ë©”ë‰´ ì•„ì´í…œ ìƒì„±
 	items.emplace_back(new MenuItem(
-		"Resume Game",
+		"Start Game",
 		[]()
 		{
-			// ¸Ş´º Åä±Û ÇÔ¼ö È£Ãâ.
+			// ë©”ë‰´ í† ê¸€ í•¨ìˆ˜ í˜¸ì¶œ.
 			Game::Get().ToggleMenu();
 		}
 	));
@@ -21,7 +21,7 @@ MenuLevel::MenuLevel()
 		"Quit Game",
 		[]()
 		{
-			// °ÔÀÓ Á¾·á.
+			// ê²Œì„ ì¢…ë£Œ.
 			Game::Get().QuitEngine();
 		}
 	));
@@ -44,16 +44,16 @@ void MenuLevel::Tick(float deltaTime)
 	super::Tick(deltaTime);
 
 	static int length = static_cast<int>(items.size());
-	// ÀÔ·Â Ã³¸®(¹æÇâÅ° À§/¾Æ·¡, ¿£ÅÍÅ°, ESCÅ°).
+	// ì…ë ¥ ì²˜ë¦¬(ë°©í–¥í‚¤ ìœ„/ì•„ë˜, ì—”í„°í‚¤, ESCí‚¤).
 	if (Input::Get().GetKeyDown(VK_UP))
 	{
-		// ÀÎµ¦½º µ¹¸®±â (À§ ¹æÇâÀ¸·Î).
+		// ì¸ë±ìŠ¤ ëŒë¦¬ê¸° (ìœ„ ë°©í–¥ìœ¼ë¡œ).
 		currentIndex = (currentIndex - 1 + length) % length;
 	}
 
 	if (Input::Get().GetKeyDown(VK_DOWN))
 	{
-		// ÀÎµ¦½º µ¹¸®±â (¾Æ·¡ ¹æÇâÀ¸·Î).
+		// ì¸ë±ìŠ¤ ëŒë¦¬ê¸° (ì•„ë˜ ë°©í–¥ìœ¼ë¡œ).
 		currentIndex = (currentIndex + 1) % length;
 	}
 
@@ -72,15 +72,18 @@ void MenuLevel::Tick(float deltaTime)
 
 void MenuLevel::Draw()
 {
-	// ¸Ş´º Á¦¸ñ Ãâ·Â.
+	// ë©”ë‰´ ì œëª© ì¶œë ¥.
 	//Util::SetConsolePosition(Vector2::Zero);
 	//Util::SetConsoleTextColor(Color::White);
 
 	//std::cout << "Sokoban Game\n\n";
 
-	Renderer::Get().SubmitCentered("Maze Runner", 0);
+	Renderer::Get().SubmitCentered("Maze Runner", -2);
 
-	// ¸Ş´º ¾ÆÀÌÅÛ Ãâ·Â
+	// ë©”ë‰´ ì•„ì´í…œ yì¢Œí‘œì— ì‚¬ìš©í•¨.
+	int y_offset = 0;
+
+	// ë©”ë‰´ ì•„ì´í…œ ì¶œë ¥
 	for (int ix = 0; ix < static_cast<int>(items.size()); ++ix)
 	{
 		Color textColor =
@@ -88,11 +91,10 @@ void MenuLevel::Draw()
 
 		Renderer::Get().SubmitCentered(
 			items[ix]->text,
-			2,
+			y_offset,
 			textColor);
 
-		//Util::SetConsoleTextColor(textColor);
-
-		//std::cout << items[ix]->text << "\n";
+		// ë©”ë‰´ ì•„ì´í…œ ì¶œë ¥ í›„ ì¤„ë°”ê¿ˆ.
+		y_offset++;
 	}
 }

@@ -10,7 +10,8 @@ enum class State
 {
 	//None = -1,
 	GamePlay = 0,
-	Menu = 1, 
+	Menu = 1,
+	startGame = 2,
 	Length
 };
 

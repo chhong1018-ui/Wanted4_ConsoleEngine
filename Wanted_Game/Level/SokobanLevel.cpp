@@ -3,7 +3,6 @@
 #include "Actor/Enemy.h"
 #include "Actor/Wall.h"
 #include "Actor/Ground.h"
-#include "Actor/box.h"
 #include "Actor/Enemy.h"
 #include "Actor/Target.h"
 #include "Util/Util.h"
@@ -236,13 +235,6 @@ void SokobanLevel::LoadMap(const char* filename, int startX, int startY)
 			//player = new Player(Vector2(position.x + startX, position.y + startY));
 			//AddNewActor(player);
 			AddNewActor(new Player(Vector2(position.x + startX, position.y + startY)));
-			AddNewActor(new Ground(Vector2(position.x + startX, position.y + startY)));
-			break;
-		case 'b':
-			//std::cout << "B";
-			// 박스는 이동 가능함.
-			// 박스가 옮겨졌을 때 그 밑에 땅이 있어야 함.
-			AddNewActor(new Box(Vector2(position.x + startX, position.y + startY)));
 			AddNewActor(new Ground(Vector2(position.x + startX, position.y + startY)));
 			break;
 		case 't':

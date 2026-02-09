@@ -1,23 +1,23 @@
-﻿#include "MenuLevel.h"
+﻿#include "StartLevel.h"
 #include "Game/Game.h"
 #include "Core/Input.h"
 #include "Util/Util.h"
 #include "Render/Renderer.h"
 #include <iostream>
 
-MenuLevel::MenuLevel()
+StartLevel::StartLevel()
 {
 	// 메뉴 아이템 생성
-	items.emplace_back(new MenuItem(
-		"resume Game",
+	items.emplace_back(new StartMenuItem(
+		"Start Game",
 		[]()
 		{
 			// 메뉴 토글 함수 호출.
-			Game::Get().ToggleMenu();
+			Game::Get().StartGame();
 		}
 	));
 
-	items.emplace_back(new MenuItem(
+	items.emplace_back(new StartMenuItem(
 		"Quit Game",
 		[]()
 		{
@@ -27,9 +27,9 @@ MenuLevel::MenuLevel()
 	));
 }
 
-MenuLevel::~MenuLevel()
+StartLevel::~StartLevel()
 {
-	for (MenuItem*& item : items)
+	for (StartMenuItem*& item : items)
 	{
 		{
 			delete item;
@@ -39,7 +39,7 @@ MenuLevel::~MenuLevel()
 	}
 }
 
-void MenuLevel::Tick(float deltaTime)
+void StartLevel::Tick(float deltaTime)
 {
 	super::Tick(deltaTime);
 
@@ -61,16 +61,9 @@ void MenuLevel::Tick(float deltaTime)
 	{
 		items[currentIndex]->onSelected();
 	}
-
-	if (Input::Get().GetKeyDown(VK_ESCAPE))
-	{
-		Game::Get().ToggleMenu();
-
-		currentIndex = 0;
-	}
 }
 
-void MenuLevel::Draw()
+void StartLevel::Draw()
 {
 	// 메뉴 제목 출력.
 	//Util::SetConsolePosition(Vector2::Zero);
@@ -78,7 +71,7 @@ void MenuLevel::Draw()
 
 	//std::cout << "Sokoban Game\n\n";
 
-	Renderer::Get().SubmitCentered("MENU", -2);
+	Renderer::Get().SubmitCentered("Maze Runner", -2);
 
 	// 메뉴 아이템 y좌표에 사용함.
 	int y_offset = 0;

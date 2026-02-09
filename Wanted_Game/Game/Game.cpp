@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Level/SokobanLevel.h"
 #include "Level/MenuLevel.h"
+#include "Level/StartLevel.h"
 
 Game* Game::instance = nullptr;
 
@@ -12,12 +13,13 @@ Game::Game()
 	// �� ���� ���� �� �迭�� �߰�
 	levels.emplace_back(new SokobanLevel());
 	levels.emplace_back(new MenuLevel());
+	levels.emplace_back(new StartLevel());
 
 	// ���� ����(����) ����.
-	state = State::Menu;
+	state = State::startGame;
 
 	// ���� ���� �� Ȱ��ȭ �� ���� ����.
-	mainLevel = levels[1];
+	mainLevel = levels[2];
 }
 
 Level* Game::GetCurrentLevel()
@@ -44,7 +46,13 @@ Game::~Game()
 // todo: ���Ӻ��� �޴��� ���� ������, ���� �޴� �߰�.
 void Game::StartGame()
 {
+	system("cls");
 
+	int stateIndex = (int)state;	// static_cast
+	int nextState = 2 - stateIndex;	// one - x.
+	state = (State)nextState;
+
+	mainLevel = levels[static_cast<int>(state)];
 }
 
 void Game::ToggleMenu()

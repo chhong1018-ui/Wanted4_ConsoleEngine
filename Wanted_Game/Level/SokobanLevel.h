@@ -3,7 +3,9 @@
 #include "Level/Level.h"
 #include "Interface/ICanPlayerMove.h"
 
-class SokobanLevel 
+#include <string>
+
+class SokobanLevel
 	: public Wanted::Level,
 	public ICanPlayerMove
 {
@@ -12,6 +14,9 @@ class SokobanLevel
 public:
 	SokobanLevel();
 
+	// 게임 레벨 초기화 후 재시작 함수.
+	void Restart();
+
 	// 이벤트 함수 오버라이드.
 	virtual void Draw() override;
 
@@ -19,9 +24,17 @@ public:
 
 	void SetMoveChecker(ICanPlayerMove* checker);
 
+	// 게임 클리어 상태를 알리는 변수
+	bool isGameClear = false;
+	
+	// Added public access specifier for getter methods
+	int GetMapWidth() const { return mapWidth; }
+	int GetMapHeight() const { return mapHeight; }
+	const std::string& GetCurrentMapFilename() const { return currentMapFilename; } // Added getter
+
 private:
 	// 게임 내에서 필요한 리소스를 로드하는 함수.
-	void LoadMap(const char* filename, int startX = 0, int startY = 0);
+	void LoadMap(const std::string& filename, int startX = 0, int startY = 0); // Changed to const std::string&
 
 	//Inherited via ICanPlayerMove
 	virtual bool CanMove(
@@ -37,12 +50,8 @@ private:
 	float GameOverTimer = 2.0f;
 	bool isWaitingForToggle = false;
 
-private:
 	// 클리어해야 하는 목표 점수.
 	int targetScore = 0;
-
-	// 게임 클리어 상태를 알리는 변수
-	bool isGameClear = false;
 
 	// 게임 오버 상태를 알리는 변수.
 	bool isGameOver = false;
@@ -50,16 +59,11 @@ private:
 	int mapWidth = 0;
 	int mapHeight = 0;
 
-	const char* currentMapFilename = nullptr;
+	std::string currentMapFilename; // Changed to std::string by value
 
-public: // Added public access specifier for getter methods
-    int GetMapWidth() const { return mapWidth; }
-    int GetMapHeight() const { return mapHeight; }
-
-
-private:
 	// 맵 크기 계산 함수.
-	Wanted::Vector2 CalculateMapDimensions(const char* filename);
+	Wanted::Vector2 CalculateMapDimensions(const std::string& filename); // Changed to const std::string&
 
 	ICanPlayerMove* moveChecker = nullptr;
+	bool wantRestart = false;
 };

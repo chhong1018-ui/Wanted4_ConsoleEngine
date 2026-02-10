@@ -45,6 +45,9 @@
     <ClCompile Include="Level\StartLevel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Level\FinishLevel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Level\SokobanLevel.h">
@@ -74,10 +77,10 @@
     <ClInclude Include="Actor\Enemy.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="BFS\Queue.h">
+    <ClInclude Include="Level\StartLevel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Level\StartLevel.h">
+    <ClInclude Include="Level\FinishLevel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

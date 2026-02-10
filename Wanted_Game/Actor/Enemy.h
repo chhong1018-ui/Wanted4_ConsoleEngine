@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Math/Vector.h"
 #include "Actor/Actor.h"
@@ -6,6 +6,7 @@
 #include <queue>
 #include <vector>
 #include <stack>
+#include <string> // Added
 
 using namespace Wanted;
 
@@ -28,7 +29,7 @@ protected:
 private:
 	//Player* targetPlayer = nullptr;
 
-	Wanted::Vector2 EnemyMapCalculation(const char* filename);
+	Wanted::Vector2 EnemyMapCalculation(const std::string& filename); // Changed signature
 
 	int mapWidth = 0;
 	int mapHeight = 0;
@@ -37,6 +38,8 @@ private:
 	// 이동 속도 조절용 멤버 (초 단위)
 	float moveInterval = 0.2f; // 몇 초마다 한 칸 이동할지
 	float moveTimer = 0.0f;    // 다음 이동까지 남은 시간
+
+	std::string enemyMapFilename; // Added
 
 	bool FindPlayerPosition(Vector2& outPlayerPos) const;
 	bool IsWalkable(const Vector2& pos) const;

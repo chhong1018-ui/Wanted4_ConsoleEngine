@@ -3,7 +3,6 @@
 #include "Actor/Enemy.h"
 #include "Actor/Wall.h"
 #include "Actor/Ground.h"
-#include "Actor/Enemy.h"
 #include "Actor/Target.h"
 #include "Util/Util.h"
 #include "Render/Renderer.h"
@@ -25,8 +24,10 @@ using namespace Wanted;
 
 SokobanLevel::SokobanLevel()
 {
+	currentMapFilename = "Map.txt"; // Initialize currentMapFilename
+
 	// 맵 크기 계산.
-	Wanted::Vector2 mapSize = CalculateMapDimensions("Map.txt");
+	Wanted::Vector2 mapSize = CalculateMapDimensions(currentMapFilename);
 	mapWidth = static_cast<int>(mapSize.x);
 	mapHeight = static_cast<int>(mapSize.y);
 
@@ -38,7 +39,85 @@ SokobanLevel::SokobanLevel()
 	int startY = (screenSize.y - mapHeight) / 2;
 
 	// 맵 로드.
-	LoadMap("Map.txt", 16,0);
+	LoadMap(currentMapFilename, 16, 0);
+}
+
+// Add necessary includes at the top of the file if not already present
+#include <vector>     // For std::vector
+#include <random>     // For std::mt19937 and std::uniform_int_distribution
+#include <windows.h>  // For FindFirstFile, FindNextFile, etc.
+
+// ... (rest of the file) ...
+
+void SokobanLevel::Restart()
+{
+	// 모든 액터 삭제.
+	for (Actor* actor : actors)
+	{
+		delete actor;
+	}
+	actors.clear();
+
+	// 게임 변수 초기화.
+	isGameClear = false;
+	isGameOver = false;
+	isWaitingForToggle = false;
+	GameOverTimer = 2.0f;
+
+	// Random map loading logic
+	std::vector<std::string> mapFiles;
+	WIN32_FIND_DATAA findFileData;
+	HANDLE hFind = FindFirstFileA("../Assets/*.txt", &findFileData);
+
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+			{
+				mapFiles.push_back(findFileData.cFileName);
+			}
+		} while (FindNextFileA(hFind, &findFileData) != 0);
+		FindClose(hFind);
+	}
+
+	std::cout << "Debug: Found " << mapFiles.size() << " map files in Assets directory." << std::endl;
+	for (const std::string& file : mapFiles)
+	{
+		std::cout << "Debug: Detected map file: " << file << std::endl;
+	}
+
+
+	if (mapFiles.empty())
+	{
+		std::cerr << "No map files found in Assets directory. Using default 'Map.txt'.\n";
+		currentMapFilename = "Map.txt"; // Fallback to default
+	}
+	else
+	{
+		// Seed the random number generator
+		std::random_device rd;
+		std::mt19937 gen(rd());
+
+		// Generate a random index
+		std::uniform_int_distribution<> distrib(0, mapFiles.size() - 1);
+		currentMapFilename = mapFiles[distrib(gen)];
+		std::cout << "Debug: Selected random map: " << currentMapFilename << std::endl;
+	}
+
+	Wanted::Vector2 mapSize = CalculateMapDimensions(currentMapFilename);
+	mapWidth = static_cast<int>(mapSize.x);
+	mapHeight = static_cast<int>(mapSize.y);
+
+	// 스크린 사이즈 가져오기.
+	Wanted::Vector2 screenSize = Renderer::Get().GetScreenSize();
+
+	// 스크린 중앙 계산.
+	int startX = (screenSize.x - mapWidth) / 2;
+	int startY = (screenSize.y - mapHeight) / 2;
+
+	// 맵 다시 로드
+	LoadMap(currentMapFilename, 16, 0);
 }
 
 void SokobanLevel::Draw()
@@ -48,43 +127,26 @@ void SokobanLevel::Draw()
 	// 게임 클리어인 경우. 메시지 출력.
 	if (isGameClear)
 	{
-		/*
-		Util::SetConsolePosition(Vector2(30, 0));
-		Util::SetConsoleTextColor(Color::White);
-		std::cout << "Game Clear!" << std::endl;
-		*/
-		// "Game Clear!"가 Renderer의 버퍼에 안들어가 있어 화면에 안보이는 문제 발생.
-		// Renderer/Renderer.h 추가하고 std::cout에서 Renderer::Get().Submit으로 변경해 렌더러에서 출력하도록 변경함.
-
-		// Vector2(30, 0)으로 실행 시 "Game Clear"로 느낌표가 잘려 출력 됨.
-		// "Game Clear!" 이미지까지 모두 프레임 내부에 출력되도록 최종으로 X 위치를 29로 변경.
+		// setting.txt의 wisth, height 기준으로 중앙 정렬,
+		// y좌표만 조정.
 		Renderer::Get().SubmitCentered(
-			"           Game Clear!            ",
-			-2,
-			Color::Green
-		);
-		Renderer::Get().SubmitCentered(
-			"                                  ",
+			"  Game Clear! Returning to Menu in 3s...  ",
 			-1,
-			Color::Black
-		);
-		Renderer::Get().SubmitCentered(
-			" Press ESC to return to the menu. ",
-			0,
 			Color::Green
 		);
 		Renderer::Get().SubmitCentered(
-			"                                  ",
-			1,
+			"                                          ",
+			0,
 			Color::Black
 		);
 		Renderer::Get().SubmitCentered(
-			"        Press 'Q' to Quit.        ",
-			2,
+			"            Press 'Q' to Quit.            ",
+			1,
 			Color::Green
 		);
 	}
 
+	// 게임 오버인 경우. 메시지 출력.
 	if (isGameOver)
 	{
 		Renderer::Get().SubmitCentered(
@@ -102,38 +164,61 @@ void SokobanLevel::Draw()
 			1,
 			Color::Red
 		);
-
-		// 게임 오버 시 타이머 처리는 Tick 함수에서 수행됩니다.
 	}
 }
 
 void SokobanLevel::Tick(float deltaTime)
 {
 	Level::Tick(deltaTime);
-	
+
 	isGameClear = CheckGameClear();
-
-	isGameOver = CheckGameOver();
-
-	// 게임 오버 상태가 되었고, 아직 타이머가 시작되지 않았다면 타이머 시작
-	if (isGameOver != isWaitingForToggle)
+	if (isGameClear)
 	{
-		isWaitingForToggle = true;
-		GameOverTimer = 2.0f; // 2초 대기 시간 설정
-	}
-
-	// 타이머가 활성화된 경우 시간 감소
-	if (isWaitingForToggle)
-	{
-		GameOverTimer -= deltaTime;
-
-		// 타이머가 만료되면 메뉴로 전환
-		if (GameOverTimer <= 0.0f)
+		// 게임 클리어 상태가 되었고, 아직 타이머가 시작되지 않았다면 타이머 시작
+		if (isGameClear != isWaitingForToggle)
 		{
-			Game::Get().ToggleMenu();
-			isWaitingForToggle = false; // 타이머 비활성화
+			isWaitingForToggle = true;
+			GameOverTimer = 3.0f; // 3초 대기 시간 설정
+		}
+
+		// 타이머가 활성화된 경우 시간 감소
+		if (isWaitingForToggle)
+		{
+			GameOverTimer -= deltaTime;
+
+			// 타이머가 만료되면 메뉴로 전환
+			if (GameOverTimer <= 0.0f)
+			{
+				Game::Get().GameFinish();
+				isWaitingForToggle = false; // 타이머 비활성화
+			}
 		}
 	}
+
+	isGameOver = CheckGameOver();
+	if (isGameOver)
+	{
+		// 게임 오버 상태가 되었고, 아직 타이머가 시작되지 않았다면 타이머 시작
+		if (isGameOver != isWaitingForToggle)
+		{
+			isWaitingForToggle = true;
+			GameOverTimer = 2.0f; // 2초 대기 시간 설정
+		}
+
+		// 타이머가 활성화된 경우 시간 감소
+		if (isWaitingForToggle)
+		{
+			GameOverTimer -= deltaTime;
+
+			// 타이머가 만료되면 메뉴로 전환
+			if (GameOverTimer <= 0.0f)
+			{
+				Game::Get().GameFinish();
+				isWaitingForToggle = false; // 타이머 비활성화
+			}
+		}
+	}
+
 }
 
 void SokobanLevel::SetMoveChecker(ICanPlayerMove* checker)
@@ -141,15 +226,15 @@ void SokobanLevel::SetMoveChecker(ICanPlayerMove* checker)
 	moveChecker = checker;
 }
 
-void SokobanLevel::LoadMap(const char* filename, int startX, int startY)
+void SokobanLevel::LoadMap(const std::string& filename, int startX, int startY)
 {
 	mapWidth = 0;
 	mapHeight = 0;
 
 	// 파일 로드.
-	// 최종 파일 경로 만들기. ("../Assets/filename")
+	// 최종 파일 경로 만들기. ("Assets/filename")
 	char path[2048] = {};
-	sprintf_s(path, 2048, "../Assets/%s", filename);
+	sprintf_s(path, 2048, "../Assets/%s", filename.c_str());
 
 	// 파일 열기.
 	FILE* file = nullptr;
@@ -159,8 +244,7 @@ void SokobanLevel::LoadMap(const char* filename, int startX, int startY)
 	if (!file)
 	{
 		// 표준 오류 콘솔 활용.
-		std::cerr << "Failed to open map file.\n";
-
+		std::cerr << "Failed to open map file: " << path << "\n"; // Added path to error
 		// 디버그 모드에서 중단점으로 중단해주는 기능.
 		__debugbreak();
 	}
@@ -214,7 +298,6 @@ void SokobanLevel::LoadMap(const char* filename, int startX, int startY)
 		#: 벽(Wall)
 		.: 바닥(Ground)
 		p: 플레이어(Player)
-		b: 박스(Box)
 		t: 타겟(Target)
 		*/
 		// 한문자씩 처리.
@@ -232,21 +315,18 @@ void SokobanLevel::LoadMap(const char* filename, int startX, int startY)
 			//std::cout << "P";
 			// 플레이어도 이동 가능함.
 			// 플레이어 밑에 땅이 있어야 함.
-			//player = new Player(Vector2(position.x + startX, position.y + startY));
-			//AddNewActor(player);
 			AddNewActor(new Player(Vector2(position.x + startX, position.y + startY)));
 			AddNewActor(new Ground(Vector2(position.x + startX, position.y + startY)));
 			break;
 		case 't':
-			//std::cout << "T";
+			//std::cout << "O";
 			AddNewActor(new Target(Vector2(position.x + startX, position.y + startY)));
 			break;
 		case 'e':
+			//std::cout << "E";
 			// Enemy는 이동 가능함.
 			// Enemy가 옮겨졌을 때 그 밑에 땅이 있어야 함.
 			Enemy * enemy = new Enemy(Vector2(position.x + startX, position.y + startY));
-			//enemy->SetTarget(player);                // 플레이어 연결
-			//enemy->SetMoveChecker(this);
 
 			AddNewActor(enemy);
 			AddNewActor(new Ground(Vector2(position.x + startX, position.y + startY)));
@@ -261,7 +341,7 @@ void SokobanLevel::LoadMap(const char* filename, int startX, int startY)
 		++position.x;
 	}
 
-	mapHeight = position.y + 1; // After the loop, position.y holds the last row index.
+	mapHeight = position.y + 1;
 
 	// 사용한 버퍼 해제.
 	delete[] data;
@@ -279,7 +359,7 @@ bool SokobanLevel::CanMove(
 	{
 		return false;
 	}
-
+	// 게임 오버인 경우 플레이어 방향조작 중단.
 	if (isGameOver)
 	{
 		return false;
@@ -320,9 +400,10 @@ bool SokobanLevel::CheckGameClear()
 			if (!other->IsTypeOf<Target>())
 				continue;
 
+			// 플레이어와 타겟의 위치가 같다면 게임 클리어.
 			if (playerPosition == other->GetPosition())
 			{
-				return true;   // 즉시 클리어
+				return true;   
 			}
 		}
 	}
@@ -357,20 +438,20 @@ bool SokobanLevel::CheckGameOver()
 	return false;
 }
 
-Wanted::Vector2 SokobanLevel::CalculateMapDimensions(const char* filename)
+Wanted::Vector2 SokobanLevel::CalculateMapDimensions(const std::string& filename)
 {
 	int width = 0;
 	int height = 0;
 
 	char path[2048] = {};
-	sprintf_s(path, 2048, "../Assets/%s", filename);
+	sprintf_s(path, 2048, "../Assets/%s", filename.c_str());
 
 	FILE* file = nullptr;
 	fopen_s(&file, path, "rt");
 
 	if (!file)
 	{
-		std::cerr << "Failed to open map file for dimension calculation.\n";
+		std::cerr << "Failed to open map file for dimension calculation: " << path << "\n"; // Added path to error
 		__debugbreak();
 	}
 

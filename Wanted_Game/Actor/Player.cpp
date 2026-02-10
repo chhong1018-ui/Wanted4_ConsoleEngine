@@ -24,8 +24,6 @@ void Player::BeginPlay()
 	// 상위함수 호출.
 	// c++는 부모 함수 가리키는 포인터가 없음.
 	Actor::BeginPlay();
-
-	//std::cout << "TestActor::BeginPlay().\n";
 }
 
 void Player::Tick(float deltaTime)

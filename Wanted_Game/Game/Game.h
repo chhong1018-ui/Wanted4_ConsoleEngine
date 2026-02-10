@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Engine/Engine.h"
+#include "Level/FinishLevel.h"
 #include <vector>
 
 using namespace Wanted;
@@ -12,6 +13,7 @@ enum class State
 	GamePlay = 0,
 	Menu = 1,
 	startGame = 2,
+	Finish = 3,
 	Length
 };
 
@@ -20,6 +22,9 @@ class Game : public Wanted::Engine
 public:
 	Game();
 	~Game();
+	void Restart();
+
+	void GameFinish();
 
 	void StartGame();
 

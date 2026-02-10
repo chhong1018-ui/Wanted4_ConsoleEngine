@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Level/Level.h"
 #include "Level/SokobanLevel.h"
@@ -7,22 +7,22 @@
 
 using namespace Wanted;
 
-// �޴� ������ ����ü.
-struct MenuItem
+
+struct FinishMenuItem
 {
-	// �޴� ���õ��� �� ���� �� �Լ��� Ÿ��
+	
 	using OnSelected = void (*)();
 
-	MenuItem(const char* text, OnSelected onSelected)
+	FinishMenuItem(const char* text, OnSelected onSelected)
 		: onSelected(onSelected)
 	{
-		//  xprtmxm qhrtk
+		//  텍스트 복사.
 		size_t length = strlen(text) + 1;
 		this->text = new char[length];
 		strcpy_s(this->text, length, text);
 	}
 
-	~MenuItem()
+	~FinishMenuItem()
 	{
 		if (text)
 		{
@@ -31,23 +31,23 @@ struct MenuItem
 		}
 	}
 
-	// �޴� �ؽ�Ʈ.
+
 	char* text = nullptr;
 
-	// �޴� ���õ��� �� ���� �� ����(�Լ�).
+	
 	OnSelected onSelected = nullptr;
 };
 
-class MenuLevel : public Level
+class FinishLevel : public Level
 {
 
-	RTTI_DECLARATIONS(MenuLevel, Level)
+	RTTI_DECLARATIONS(FinishLevel, Level)
 
 public:
-	MenuLevel();
-	~MenuLevel();
+	FinishLevel();
+	~FinishLevel();
 
-	// �̺�Ʈ �Լ� �������̵�
+	
 	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
 
@@ -62,5 +62,5 @@ private:
 	Color unselectedColor = Color::White;
 
 	
-	std::vector<MenuItem*> items;
+	std::vector<FinishMenuItem*> items;
 };

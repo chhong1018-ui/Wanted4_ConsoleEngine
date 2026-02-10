@@ -1,35 +1,35 @@
-ï»¿#include "StartLevel.h"
+#include "FinishLevel.h"
 #include "Game/Game.h"
 #include "Core/Input.h"
 #include "Util/Util.h"
 #include "Render/Renderer.h"
 #include <iostream>
 
-StartLevel::StartLevel()
+FinishLevel::FinishLevel()
 {
-	// ë©”ë‰´ ì•„ì´í…œ ìƒì„±
-	items.emplace_back(new StartMenuItem(
-		"Start Game",
+	// ¸Ş´º ¾ÆÀÌÅÛ »ı¼º
+	items.emplace_back(new FinishMenuItem(
+		"Restart Game!",
 		[]()
 		{
-			// ë©”ë‰´ í† ê¸€ í•¨ìˆ˜ í˜¸ì¶œ.
-			Game::Get().StartGame();
+			// ¸Ş´º Åä±Û ÇÔ¼ö È£Ãâ.
+			Game::Get().Restart();
 		}
 	));
 
-	items.emplace_back(new StartMenuItem(
+	items.emplace_back(new FinishMenuItem(
 		"Quit Game",
 		[]()
 		{
-			// ê²Œì„ ì¢…ë£Œ.
+			// °ÔÀÓ Á¾·á.
 			Game::Get().QuitEngine();
 		}
 	));
 }
 
-StartLevel::~StartLevel()
+FinishLevel::~FinishLevel()
 {
-	for (StartMenuItem*& item : items)
+	for (FinishMenuItem*& item : items)
 	{
 		{
 			delete item;
@@ -39,21 +39,21 @@ StartLevel::~StartLevel()
 	}
 }
 
-void StartLevel::Tick(float deltaTime)
+void FinishLevel::Tick(float deltaTime)
 {
 	super::Tick(deltaTime);
 
 	static int length = static_cast<int>(items.size());
-	// ì…ë ¥ ì²˜ë¦¬(ë°©í–¥í‚¤ ìœ„/ì•„ë˜, ì—”í„°í‚¤, ESCí‚¤).
+	// ÀÔ·Â Ã³¸®(¹æÇâÅ° À§/¾Æ·¡, ¿£ÅÍÅ°, ESCÅ°).
 	if (Input::Get().GetKeyDown(VK_UP))
 	{
-		// ì¸ë±ìŠ¤ ëŒë¦¬ê¸° (ìœ„ ë°©í–¥ìœ¼ë¡œ).
+		// ÀÎµ¦½º µ¹¸®±â (À§ ¹æÇâÀ¸·Î).
 		currentIndex = (currentIndex - 1 + length) % length;
 	}
 
 	if (Input::Get().GetKeyDown(VK_DOWN))
 	{
-		// ì¸ë±ìŠ¤ ëŒë¦¬ê¸° (ì•„ë˜ ë°©í–¥ìœ¼ë¡œ).
+		// ÀÎµ¦½º µ¹¸®±â (¾Æ·¡ ¹æÇâÀ¸·Î).
 		currentIndex = (currentIndex + 1) % length;
 	}
 
@@ -63,16 +63,16 @@ void StartLevel::Tick(float deltaTime)
 	}
 }
 
-void StartLevel::Draw()
+void FinishLevel::Draw()
 {
-	// ë©”ë‰´ ì œëª© ì¶œë ¥.
+	// ¸Ş´º Á¦¸ñ Ãâ·Â.
 
 	Renderer::Get().SubmitCentered("Maze Runner", -2);
 
-	// ë©”ë‰´ ì•„ì´í…œ yì¢Œí‘œì— ì‚¬ìš©í•¨.
+	// ¸Ş´º ¾ÆÀÌÅÛ yÁÂÇ¥¿¡ »ç¿ëÇÔ.
 	int y_offset = 0;
 
-	// ë©”ë‰´ ì•„ì´í…œ ì¶œë ¥
+	// ¸Ş´º ¾ÆÀÌÅÛ Ãâ·Â
 	for (int ix = 0; ix < static_cast<int>(items.size()); ++ix)
 	{
 		Color textColor =
@@ -83,7 +83,7 @@ void StartLevel::Draw()
 			y_offset,
 			textColor);
 
-		// ë©”ë‰´ ì•„ì´í…œ ì¶œë ¥ í›„ ì¤„ë°”ê¿ˆ.
+		// ¸Ş´º ¾ÆÀÌÅÛ Ãâ·Â ÈÄ ÁÙ¹Ù²Ş.
 		y_offset++;
 	}
 }

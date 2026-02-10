@@ -1,8 +1,9 @@
-#include "Enemy.h"
+﻿#include "Enemy.h"
 #include "Core/Input.h"
 #include "Engine/Engine.h"
-#include "Actor/Player.h"
-#include "Actor/Wall.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Wall.h"
 #include "Level/Level.h"
 #include "Level/SokobanLevel.h"
 
@@ -12,11 +13,15 @@
 
 #include <iostream>
 #include <Windows.h>
+#include <queue> // Included due to previous RTTI_DECLARATIONS observation
+#include <vector> // Included due to previous RTTI_DECLARATIONS observation
+#include <stack> // Included due to previous RTTI_DECLARATIONS observation
+
 
 namespace
 {
-	constexpr int MAP_OFFSET_X = 16; // SokobanLevel::LoadMap startX
-	constexpr int MAP_OFFSET_Y = 0;  // SokobanLevel::LoadMap startY
+	const int MAP_OFFSET_X = 16;
+	const int MAP_OFFSET_Y = 0;
 }
 
 Enemy::Enemy(const Vector2& position)
@@ -26,11 +31,6 @@ Enemy::Enemy(const Vector2& position)
 	sortingOrder = 11;
 }
 
-//void Enemy::SetTarget(Player* player)
-//{
-//	targetPlayer = player;
-//}
-
 void Enemy::BeginPlay()
 {
 }
@@ -39,13 +39,28 @@ void Enemy::Tick(float deltaTime)
 {
 	super::Tick(deltaTime);
 
-	// 맵 크기는 한 번만 계산해서 캐싱.
-	if (!bMapInitialized)
+	Level* level = GetOwner();
+	if (level != nullptr)
 	{
-		Wanted::Vector2 mapSize = EnemyMapCalculation("Map.txt");
-		mapWidth = static_cast<int>(mapSize.x);
-		mapHeight = static_cast<int>(mapSize.y);
-		bMapInitialized = true;
+		// *게임 클리어 시 Enemy 정지를 위해 다운캐스팅 사용.
+		SokobanLevel* sokobanLevel = dynamic_cast<SokobanLevel*>(level);
+		if (sokobanLevel != nullptr && sokobanLevel->isGameClear)
+		{
+			// 게임이 클리어되면 적은 움직이지 않습니다.
+			return;
+		}
+
+		if (!bMapInitialized)
+		{
+			if (sokobanLevel != nullptr)
+			{
+				enemyMapFilename = sokobanLevel->GetCurrentMapFilename();
+				Wanted::Vector2 mapSize = EnemyMapCalculation(enemyMapFilename);
+				mapWidth = static_cast<int>(mapSize.x);
+				mapHeight = static_cast<int>(mapSize.y);
+				bMapInitialized = true;
+			}
+		}
 	}
 
 	// 이동 쿨타임 감소
@@ -146,6 +161,9 @@ bool Enemy::FindNextStepToPlayer(const Vector2& playerPos, Vector2& outNextPos)
 		return false;
 	}
 
+	Level* level = GetOwner();
+
+
 	// 월드 좌표를 맵 로컬 좌표로 변환.
 	int sx = startPos.x - MAP_OFFSET_X;
 	int sy = startPos.y - MAP_OFFSET_Y;
@@ -216,7 +234,8 @@ bool Enemy::FindNextStepToPlayer(const Vector2& playerPos, Vector2& outNextPos)
 			}
 
 			visited[ly][lx] = true;
-			parent[ly][lx] = cur; // parent에는 월드 좌표 저장.
+			// parent에는 월드 좌표 저장.
+			parent[ly][lx] = cur; 
 			q.push(nextWorld);
 		}
 	}
@@ -258,14 +277,13 @@ void Enemy::Draw()
 	super::Draw();
 }
 
-Wanted::Vector2 Enemy::EnemyMapCalculation(const char* filename)
+Wanted::Vector2 Enemy::EnemyMapCalculation(const std::string& filename)
 {
-	// 
 	int width = 0;
 	int height = 0;
 
 	char path[2048] = {};
-	sprintf_s(path, 2048, "../Assets/%s", filename);
+	sprintf_s(path, 2048, "../Assets/%s", filename.c_str());
 
 	FILE* file = nullptr;
 	fopen_s(&file, path, "rt");

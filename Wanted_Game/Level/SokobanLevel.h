@@ -22,14 +22,9 @@ public:
 
 	void Tick(float deltaTime) override;
 
-	void SetMoveChecker(ICanPlayerMove* checker);
-
 	// 게임 클리어 상태를 알리는 변수
 	bool isGameClear = false;
 	
-	// Added public access specifier for getter methods
-	int GetMapWidth() const { return mapWidth; }
-	int GetMapHeight() const { return mapHeight; }
 	const std::string& GetCurrentMapFilename() const { return currentMapFilename; } // Added getter
 
 private:
@@ -50,9 +45,6 @@ private:
 	float GameOverTimer = 2.0f;
 	bool isWaitingForToggle = false;
 
-	// 클리어해야 하는 목표 점수.
-	int targetScore = 0;
-
 	// 게임 오버 상태를 알리는 변수.
 	bool isGameOver = false;
 
@@ -63,7 +55,4 @@ private:
 
 	// 맵 크기 계산 함수.
 	Wanted::Vector2 CalculateMapDimensions(const std::string& filename); // Changed to const std::string&
-
-	ICanPlayerMove* moveChecker = nullptr;
-	bool wantRestart = false;
 };

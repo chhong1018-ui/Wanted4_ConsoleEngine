@@ -64,7 +64,7 @@ void SokobanLevel::Restart()
 	isWaitingForToggle = false;
 	GameOverTimer = 2.0f;
 
-	// Random map loading logic
+	// 랜덤 맵 로딩.
 	std::vector<std::string> mapFiles;
 	WIN32_FIND_DATAA findFileData;
 	HANDLE hFind = FindFirstFileA("../Assets/*.txt", &findFileData);
@@ -174,7 +174,8 @@ void SokobanLevel::Tick(float deltaTime)
 	isGameClear = CheckGameClear();
 	if (isGameClear)
 	{
-		// 게임 클리어 상태가 되었고, 아직 타이머가 시작되지 않았다면 타이머 시작
+		// 게임 클리어 상태가 되었고, 
+		// 아직 타이머가 시작되지 않았다면 타이머 시작
 		if (isGameClear != isWaitingForToggle)
 		{
 			isWaitingForToggle = true;
@@ -190,7 +191,8 @@ void SokobanLevel::Tick(float deltaTime)
 			if (GameOverTimer <= 0.0f)
 			{
 				Game::Get().GameFinish();
-				isWaitingForToggle = false; // 타이머 비활성화
+				// 타이머 비활성화
+				isWaitingForToggle = false; 
 			}
 		}
 	}
@@ -219,11 +221,6 @@ void SokobanLevel::Tick(float deltaTime)
 		}
 	}
 
-}
-
-void SokobanLevel::SetMoveChecker(ICanPlayerMove* checker)
-{
-	moveChecker = checker;
 }
 
 void SokobanLevel::LoadMap(const std::string& filename, int startX, int startY)

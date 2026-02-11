@@ -33,9 +33,6 @@ namespace Wanted
 		// 엔진 종료 함수.
 		void QuitEngine();
 
-		// 새 레벨을 추가(설정)하는 함수.
-		void SetNewLevel(class Level* newLevel);
-
 		// 전역 접근 함수.
 		static Engine& Get();
 

@@ -2,7 +2,6 @@
 #include "Core/Input.h"
 #include "Engine/Engine.h"
 #include "Player.h"
-#include "Enemy.h"
 #include "Wall.h"
 #include "Level/Level.h"
 #include "Level/SokobanLevel.h"
@@ -13,9 +12,8 @@
 
 #include <iostream>
 #include <Windows.h>
-#include <queue> // Included due to previous RTTI_DECLARATIONS observation
-#include <vector> // Included due to previous RTTI_DECLARATIONS observation
-#include <stack> // Included due to previous RTTI_DECLARATIONS observation
+#include <queue>
+#include <vector>
 
 
 namespace
@@ -326,6 +324,7 @@ Wanted::Vector2 Enemy::EnemyMapCalculation(const std::string& filename)
 	height = position.y + 1;
 
 	delete[] data;
+	data = nullptr;
 	fclose(file);
 
 	return Wanted::Vector2(width, height);
